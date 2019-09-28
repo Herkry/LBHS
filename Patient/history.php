@@ -201,8 +201,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                <th>Symptoms</th>
                <th>Illness</th>
                <th>Doctor Note</th>
-               <th>Pharmacy ID</th>
-               <th>Prescription ID</th>
+               <th>Doctor</th>
+               <th>Nurse</th>
 
                <th>Update Date</th>
                </tr>
@@ -227,8 +227,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
               $u8 = $row['illness'];
               $u9 = $row['docNote'];
               $u12 = $row['date_created'];
-              $u10 = $row['pharmId'];
-              $u11 = $row['prescId'];
+              $u10 = $row['docName'];
+              $u11 = $row['nurseName'];
               $u1 = $row['patId'];
 
 
