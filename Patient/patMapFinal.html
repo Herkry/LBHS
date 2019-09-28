@@ -1,0 +1,358 @@
+<!DOCTYPE html >
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type"  charset=UTF-8"/>
+    <title>Using MySQL and PHP with Google Maps</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+<html>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      /*var customLabel = {
+        restaurant: {
+          label: 'R'
+        },
+        bar: {
+          label: 'B'
+        }
+      };
+	  */
+		//Creating map
+		//var map;
+		
+		//Create a new blank array for all the listing markers.
+		var markersAll = [];
+		
+		//Create a new blank array for all the locations and their details.
+		var locationsAll = [];
+		
+    function initMap() {
+			var map = new google.maps.Map(document.getElementById('map'), {
+			center: new google.maps.LatLng(-33.863276, 151.207977),
+			zoom: 12
+      });
+      var infoWindow = new google.maps.InfoWindow;
+		
+		
+		  //Finding user location
+		  var infoWindowUser = new google.maps.InfoWindow;
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              };
+			
+			   var markerUser = new google.maps.Marker({
+			    position: pos,
+			    map: map,
+			    title: 'Your Position'
+			    });
+
+          //infoWindowUser.setPosition(pos);
+          //infoWindowUser.setContent('Location found.');
+          //infoWindowUser.open(map);
+          map.setCenter(pos);
+        
+			    markerUser.addListener('click', function() {
+			      if (infoWindow.marker != marker) {
+                    infoWindowUser.setContent(markerUser.title);
+                    infoWindow.open(map, marker);
+				
+				      // Make sure the marker property is cleared if the infowindow is closed.
+				      infoWindow.addListener('closeclick', function() {
+				      infoWindow.marker = null;
+				      });
+			      }
+          });
+			
+        }, function() {
+            handleLocationError(true, infoWindowUser, map.getCenter());
+            });
+
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindowUser, map.getCenter());
+        }
+      
+
+        function handleLocationError(browserHasGeolocation, infoWindowUser, pos) {
+          infoWindowUser.setPosition(pos);
+          infoWindowUser.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+          infoWindowUser.open(map);
+        }	
+
+
+			
+		//Incremental Here to track no. of entries/markers
+		var i = 0;
+		
+		//Change this depending on the name of your PHP or XML file
+        downloadUrl('MyXmlFile3.xml', function(data) {
+            var xml = data.responseXML;
+            var markers = xml.documentElement.getElementsByTagName('marker');
+            Array.prototype.forEach.call(markers, function(markerElem) {
+              var docFname = markerElem.getAttribute('docFname');
+                var docLname = markerElem.getAttribute('docLname');
+                var docPhone = markerElem.getAttribute('docPhone');
+                var docSpecialty = markerElem.getAttribute('docSpecialty');  
+                var hospId = markerElem.getAttribute('hospId');
+                var hospName = markerElem.getAttribute('hospName');
+                var hospAddress = markerElem.getAttribute('hospAddress');
+                var point = new google.maps.LatLng(
+                  parseFloat(markerElem.getAttribute('hospLat')),
+                  parseFloat(markerElem.getAttribute('hospLong')));				  
+				    /* 
+				    var position = point;
+				    var title = hospName;
+				    // Create a marker per location, and put into markers array.
+				    var marker = new google.maps.Marker({
+					    map: map,
+					    position: position,
+					    title: title,
+					    animation: google.maps.Animation.DROP,
+					    id: i
+				    });
+				    // Push the marker to our array of markers.
+				    markers.push(marker);
+				    */ 
+				  
+
+			        //InfoWindow Content
+                    var infowincontent = document.createElement('div');
+                    var strong = document.createElement('strong');
+                    strong.textContent = "Dr. "+docFname;
+                    infowincontent.appendChild(strong);
+
+                    infowincontent.appendChild(document.createElement('br'));
+                    var text = document.createElement('text');
+                    text.textContent = docSpecialty ;
+                    infowincontent.appendChild(text);
+
+                    infowincontent.appendChild(document.createElement('br'));
+                    var text = document.createElement('text');
+                    text.textContent = docPhone;
+                    infowincontent.appendChild(text);
+
+                    infowincontent.appendChild(document.createElement('br'));
+                    var text = document.createElement('text');
+                    text.textContent = hospName;
+                    infowincontent.appendChild(text);
+                    // icon = customLabel[type] || {};
+			  
+			  
+              var marker = new google.maps.Marker({
+                map: map,
+                position: point,
+                title: hospName
+                //label: icon.label
+              });
+              
+              /*
+              marker.addListener('click', function() {
+			        if (infoWindow.marker != marker) {
+                infoWindow.setContent(infowincontent);
+                infoWindow.open(map, marker);
+				
+				      // Make sure the marker property is cleared if the infowindow is closed.
+				      infoWindow.addListener('closeclick', function() {
+				        infoWindow.marker = null;
+				      });
+			        }
+              });
+              */
+			
+			
+			        // Push the marker to our array of markers.
+			        markersAll.push(marker);
+              marker.setMap(map);
+
+            }); //foreach loop
+          }); //downloadUrl function
+        } //initMap
+        
+        //Distance Function
+        searchWithinTime();
+
+    /*   
+    //Fix THIS FUNCTION in its appropriate position  
+    //Calculate Distances between user location and Hospitals   
+    function searchWithinTime() {
+        // Initialize the distance matrix service.
+        var distanceMatrixService = new google.maps.DistanceMatrixService;
+        //AAAA  var address = document.getElementById('search-within-time-text').value;
+        // Check to make sure the place entered isn't blank.
+        //if (address == '') {
+        //  window.alert('You must enter an address.');
+        //} else {
+        //  hideListings();
+
+          // Use the distance matrix service to calculate the duration of the
+          // routes between all our markers, and the destination address entered
+          // by the user. Then put all the origins into an origin matrix.
+          var origins = [];
+          for (var i = 0; i < markersAll.length; i++) {
+            origins[i] = markersAll[i].position;
+          }
+          var destination = markerUser.position;//Ch
+          //var mode = document.getElementById('mode').value;
+          // Now that both the origins and destination are defined, get all the
+          // info for the distances between them.
+          distanceMatrixService.getDistanceMatrix({
+            origins: origins,
+            destinations: [destination],
+            //travelMode: google.maps.TravelMode[mode],
+            unitSystem: google.maps.UnitSystem.IMPERIAL,
+          }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              window.alert('Error was: ' + status);
+            } else {
+              displayMarkersWithinTime(response);
+            }
+          });
+        //}
+    }//end of this function here
+
+      function displayMarkersWithinTime(response) {
+        //var maxDuration = document.getElementById('max-duration').value;
+        var origins = response.originAddresses;
+        var destinations = response.destinationAddresses;
+        // Parse through the results, and get the distance and duration of each.
+        // Because there might be  multiple origins and destinations we have a nested loop
+        // Then, make sure at least 1 result was found.
+        var atLeastOne = false;
+        for (var i = 0; i < origins.length; i++) {
+          var results = response.rows[i].elements;
+          for (var j = 0; j < results.length; j++) {
+            var element = results[j];
+            if (element.status === "OK") {
+              // The distance is returned in feet, but the TEXT is in miles. If we wanted to switch
+              // the function to show markers within a user-entered DISTANCE, we would need the
+              // value for distance, but for now we only need the text.
+              var distanceText = element.distance.text;
+              // Duration value is given in seconds so we make it MINUTES. We need both the value
+              // and the text.
+              var duration = element.duration.value / 60;
+              var durationText = element.duration.text;
+              //the origin [i] should = the markers[i]
+              markersAll[i].setMap(map);
+                atLeastOne = true;
+                // Create a mini infowindow to open immediately and contain the
+                // distance and duration
+                var infowindow = new google.maps.InfoWindow({
+                  content: durationText + ' away, ' + distanceText
+                });
+                infowindow.open(map, markersAll[i]);
+                // Put this in so that this small window closes if the user clicks
+                // the marker, when the big infowindow opens
+                markersAll[i].infowindow = infowindow;
+                google.maps.event. (markersAll[i], 'click', function() {
+                  this.infowindow.close();
+                });
+
+              /*
+                if (duration <= maxDuration) {
+                //the origin [i] should = the markers[i]
+                markers[i].setMap(map);
+                atLeastOne = true;
+                // Create a mini infowindow to open immediately and contain the
+                // distance and duration
+                var infowindow = new google.maps.InfoWindow({
+                  content: durationText + ' away, ' + distanceText
+                });
+                infowindow.open(map, markers[i]);
+                // Put this in so that this small window closes if the user clicks
+                // the marker, when the big infowindow opens
+                markers[i].infowindow = infowindow;
+                google.maps.event.addListener(markers[i], 'click', function() {
+                  this.infowindow.close();
+                });
+    //Add end comment here          }
+            
+            }
+          }
+        }
+        if (!atLeastOne) {
+          window.alert('We could not find any locations within that distance!');
+        }
+      }//End of this function here
+      */
+
+
+
+			
+
+
+      function downloadUrl(url, callback) {
+        var request = window.ActiveXObject ?
+            new ActiveXObject('Microsoft.XMLHTTP') :
+            new XMLHttpRequest;
+
+        request.onreadystatechange = function() {
+          if (request.readyState == 4) {
+            request.onreadystatechange = doNothing;
+            callback(request, request.status);
+          }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+      }
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  //Functions YET to be used
+	  // This function populates the infowindow when the marker is clicked. We'll only allow
+      // one infowindow which will open at the marker that is clicked, and populate based
+      // on that markers position.
+	  function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
+          infowindow.marker = marker;
+          infowindow.setContent('<div>' + "Harry" + '</div>');
+          infowindow.open(map, marker);
+          // Make sure the marker property is cleared if the infowindow is closed.
+          infowindow.addListener('closeclick', function() {
+            infowindow.marker = null;
+          });
+        }
+      }
+
+      function doNothing() {}
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCX_XcVwDhTZdtx8-mkuitLN48uuBT_FE4&callback=initMap">
+    </script>
+  </body>
+</html>
