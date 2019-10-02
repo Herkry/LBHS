@@ -1,4 +1,34 @@
 <?php
+
+require("sqlFunctions.php");
+//Selecting DOC details to display to patient//
+//Getting DB parameters- patId is gotten from SESSION variable
+$patId = 1;
+$listStatus = "On Nurse Queue";
+//$docId CHECK
+
+//Selecting docId from WaitingList relation where patId= SESSION variable AND listStatus= On nurse queue
+$selectDocId = "SELECT docId FROM waitinglist WHERE patId = '$patId' AND '$listStatus' = 'On Nurse Queue'";
+$rowDocId = getData($selectDocId);
+$docId = $rowDocId[0]['docId'];
+
+//Now select from doctors table all the relevant doc info
+$selectDocInfo = "SELECT docFname, docLname, docPhone, docQueue, docSpecialty, docEmail FROM doctor WHERE docId = '$docId' ";
+$rowDocInfo = getData($selectDocInfo);
+
+//Run for Loop to display all docInfo
+for($i = 0; $i < count($rowDocInfo); $i++){
+	//eg rowDocInfo[$i]['docFname']
+}
+
+//TEST
+//echo("<pre>");
+//print_r($rowDocInfo);
+//echo("</pre>");
+
+//echo($rowDocInfo[0]["docFname"]);
+
+
 // Initialize the session
 session_start();
  
@@ -106,7 +136,21 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      border-radius: 25px;
      }
 
-
+ #sublabel33{
+     width:250px;
+     height:50px;
+     margin-top:20px;
+     margin-bottom:20px;
+     margin:auto;
+     padding-top:11px;
+     text-align: center;
+     font-family: "Angsana New", Angsana, serif;
+     font-size:20px;
+     border-radius: 25px;
+     background-color: #CB4335;
+    
+    
+}
 
 
 		footer {
@@ -170,24 +214,42 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 			      Appointment Details
               </div>
               <div id="label3">
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Working hours:<br>Speciality:
-				 
-			  </div>
+        <?php
+        echo("        
+        <div id='sublabel32' align = 'center'>
+            
+			      Doctor Name: "        ."   " .$rowDocInfo[0]["docFname"] ." " .$rowDocInfo[0]["docLname"] ."<br>
+            Doctor Specialty: "   ."   "       .$rowDocInfo[0]["docSpecialty"]                         ."<br>
+
+        </div>
+        ");
+        ?>
 
 		   </div>
            
            <div id="label3">
-			  <div id="sublabel32">
-			      Queue Amount:<br>Waiting time:<br>Service Time:<br>
+        <?php 
+        echo("    
+			  <div id='sublabel32' align = 'center'>
+            Phone: "            .$rowDocInfo[0]["docPhone"]                             ."<br>
+            Email: "            .$rowDocInfo[0]["docEmail"]                             ."<br>
+            Queue: "            .$rowDocInfo[0]["docQueue"]                             ."<br>
 				 
-			  </div>
+        </div><br>
+        ");
+        ?>
 
-           </div>
-           
+          <div id="sublabel33">	
+				     <a href="dash2.php" style="color: #FDFEFE">View Medicine</a>				 
+          </div>
+
+          </div>
+          
+          
+          
 		   </div>
 		   <footer class="container-fluid text-center">
-            <p>Footer Text</p>
+            <p></p>
         </footer>
 </body>
 </html>
