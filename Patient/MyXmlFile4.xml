@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<markers>
+    <marker docFname="Harry" docLname="Karani" docPhone="710155910" docSpecialty="Dentist" hospName="Nairobi Hospital" hospAddress="28-606600" hospOpeningHrs="0800" hospClosingHrs="2200" hospLat="-1.296115" hospLong="36.804715"/>
+    <marker docFname="Kevin" docLname="Karani" docPhone="727717068" docSpecialty="Optician" hospName="Aga Khan Hospital" hospAddress="67-89234" hospOpeningHrs="0700" hospClosingHrs="2300" hospLat="-1.261775" hospLong="36.822210"/>
+</markers>
