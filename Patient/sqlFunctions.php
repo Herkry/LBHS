@@ -3,7 +3,7 @@
 		$dbserver = "localhost";
 		$username = "root";
 		$password = "";
-		$dbname = "icspro2";
+		$dbname = "icspro";
 		
 		$link = mysqli_connect($dbserver, $username, $password, $dbname);
 		//or die("Could not connect");

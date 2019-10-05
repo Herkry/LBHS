@@ -4,7 +4,7 @@
 $dbserver = "localhost";
 $username = "root";
 $password = "";
-$dbname = "lhs";
+$dbname = "icspro";
 
 // Start XML file, create parent node
 
@@ -57,9 +57,9 @@ while ($row = @mysqli_fetch_assoc($result)){
 
 }
 
-$dom->save('MyXmlFile4.xml');
+$dom->save('hospital_maps.xml');
 echo $dom->saveXML();
-echo "Harry";
 
+header("location: /LBHS/Hospital_Admin/dashboard.php");
 
 ?>

@@ -1,34 +1,4 @@
 <?php
-
-require("dbConnection.php");
-//Selecting DOC details to display to patient//
-//Getting DB parameters- patId is gotten from SESSION variable
-$patId = 1;
-$listStatus = "On Nurse Queue";
-//$docId CHECK
-
-//Selecting docId from WaitingList relation where patId= SESSION variable AND listStatus= On nurse queue
-$selectDocId = "SELECT docId FROM waitinglist WHERE patId = '$patId' AND '$listStatus' = 'On Nurse Queue'";
-$rowDocId = getData($selectDocId);
-$docId = $rowDocId[0]['docId'];
-
-//Now select from doctors table all the relevant doc info
-$selectDocInfo = "SELECT docFname, docLname, docPhone, docQueue, docSpecialty, docEmail FROM doctor WHERE docId = '$docId' ";
-$rowDocInfo = getData($selectDocInfo);
-
-//Run for Loop to display all docInfo
-for($i = 0; $i < count($rowDocInfo); $i++){
-	//eg rowDocInfo[$i]['docFname']
-}
-
-//TEST
-//echo("<pre>");
-//print_r($rowDocInfo);
-//echo("</pre>");
-
-//echo($rowDocInfo[0]["docFname"]);
-
-
 // Initialize the session
 session_start();
  
@@ -90,6 +60,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
     }
 
+
+    
+
 		#back{
 		
 	
@@ -136,7 +109,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      border-radius: 25px;
      }
 
- #sublabel33{
+#sublabel33{
      width:250px;
      height:50px;
      margin-top:20px;
@@ -153,8 +126,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 
 
+
 		footer {
-            margin-top:20px;
+      margin-top:20px;
 	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
       padding: 25px;
 	  height: 100px;
@@ -190,11 +164,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li class="active"><a href="dash1.php" style="color: white;">Appointments</a></li>
-        <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-        <li><a href="prescription.php"style="color: white;">Prescription</a></li>
-        <li><a href="history.php"style="color: white;">Medical History</a></li>
+        <li class="active" ><a href="#" style="color: white;">Home</a></li>
+        <li ><a href="#" style="color: white;">Doctors</a></li>
+        <li><a href="#"style="color: white;">Nurses</a></li>
+        <li><a href="dashb1.php"style="color: white;">Activities</a></li>
+        <li><a href="#"style="color: white;">Statistics-Reports</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -211,45 +185,55 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		           		   
 		      <div id="sublabel31">
-			      Appointment Details
+			      Doctors Around You
               </div>
               <div id="label3">
-        <?php
-        echo("        
-        <div id='sublabel32' align = 'center'>
-            
-			      Doctor Name: "        ."   " .$rowDocInfo[0]["docFname"] ." " .$rowDocInfo[0]["docLname"] ."<br>
-            Doctor Specialty: "   ."   "       .$rowDocInfo[0]["docSpecialty"]                         ."<br>
+			  <div id="sublabel32">
+			      Name:<br>Distance:<br>Working hours:<br>
+				 
+			  </div>
+			  <div id="sublabel33">
 
-        </div>
-        ");
-        ?>
+				 
+				     <a href="dash2.php" style="color: #FDFEFE">Request Appointment</a>
+				 
 
+				 
+			  </div>
 		   </div>
            
            <div id="label3">
-        <?php 
-        echo("    
-			  <div id='sublabel32' align = 'center'>
-            Phone: "            .$rowDocInfo[0]["docPhone"]                             ."<br>
-            Email: "            .$rowDocInfo[0]["docEmail"]                             ."<br>
-            Queue: "            .$rowDocInfo[0]["docQueue"]                             ."<br>
+			  <div id="sublabel32">
+			      Name:<br>Distance:<br>Working hours:<br>
 				 
-        </div><br>
-        ");
-        ?>
+			  </div>
+			  <div id="sublabel33">
 
-          <div id="sublabel33">	
-				     <a href="dash2.php" style="color: #FDFEFE">View Medicine</a>				 
-          </div>
+				 
+				     <a href="dash2.php" style="color: #FDFEFE">Request Appointment</a>
+				 
 
-          </div>
-          
-          
-          
+				 
+			  </div>
+           </div>
+           
+           <div id="label3">
+			  <div id="sublabel32">
+			      Name:<br>Distance:<br>Working hours:<br>
+				 
+			  </div>
+			  <div id="sublabel33">
+
+				 
+				     <a href="dash2.php" style="color: #FDFEFE">Request Appointment</a>
+				 
+
+				 
+			  </div>
+		   </div>
 		   </div>
 		   <footer class="container-fluid text-center">
-            <p></p>
+            <p>Footer Text</p>
         </footer>
 </body>
 </html>

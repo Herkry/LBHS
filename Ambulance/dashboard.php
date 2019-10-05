@@ -13,7 +13,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Dashboard</title>
+  <title>Emergency</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -88,7 +88,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 	    padding:30px;
 	
 	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-		border-radius: 25px;
       }
    #sublabel32{
      width:600px;
@@ -103,23 +102,64 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      padding:30px;
      color:white;
      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-	 border-radius: 25px;
      }
 
-#sublabel33{
+
+
+#label3{
+      height:200px;
+
+    
+	  margin-top:20px;
+  
+      }
+  
+   #sublabel31{
+	    width:600px;
+	    height:70px;
+    
+	    margin:auto;
+        padding-top:15px;
+	    font-size:30px;
+	    font-family: "Angsana New", Angsana, serif;
+	    color: white;
+	    text-align:center;
+	
+	    border-radius: 25px;
+	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+      }
+   #sublabel32{
+     width:600px;
+	   height:150px;
+       margin-top:20px;
+       margin-bottom:20px;
+     margin:auto;
+
+     font-family:"Angsana New", Angsana, serif;
+     font-size:22px;
+     text-align: left;
+    
+     padding:30px;
+     color:white;
+     background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+     border-radius: 25px;
+     }
+
+     #sublabel33{
      width:250px;
      height:50px;
-     margin: auto;
-     margin-top: 30px;
+     float:left;
+     margin-top: 15px;
+     margin-left:20px;
      padding-top:11px;
      text-align: center;
      font-family: "Angsana New", Angsana, serif;
      font-size:20px;
      border-radius: 25px;
      background-color: #CB4335;
-	 border-radius: 25px;
     
 }
+
 
 
 
@@ -127,6 +167,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             height:500px;
             width:100%;
 			padding:0px;
+            margin-bottom:20px;
         }
 		#search{
           width:200px;
@@ -138,30 +179,20 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		  
 		  
 		}
-		#specialist{
-			float: left;
-			margin-right:50px;
-			padding-top:10px;
-			width:200px;
-		
-		}
+
 		#radius{
 			float: left;
 			padding-top:10px;
 			width:200px;
-			margin-right:50px;
+		    
 
 		}
-		#buttons{
-			float:left;
-			padding-top:30px;
-			width:200px;
-		}
+
 
 		footer {
 	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
       padding: 25px;
-	  height: 200px;
+	  height: 100px;
     }
 
 
@@ -194,11 +225,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active" ><a href="#" style="color: white;">Home</a></li>
+        <li  ><a href="home.php" style="color: white;">Home</a></li>
         <li><a href="dash1.php" style="color: white;">Appointments</a></li>
-        <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-		<li><a href="prescription.php"style="color: white;">Prescription</a></li>
-		<li><a href="history.php"style="color: white;">Medical History</a></li>
+        <li class="active"><a href="#"style="color: white;">Emergency</a></li>
+        <li><a href="prescription.php"style="color: white;">Prescription</a></li>
+        <li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -210,33 +241,22 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 		   <div id="search">
 
-		   <div id="specialist" class="form-group">
-                <label>Search Specialist</label>
-				<input type="text" id="zoom-to-area-text" class="form-control">
-				
-		   </div>
+
 		   
 		   <div id="radius" class="form-group">
                 <label>Radius</label>
 				<input type="text" name="search" class="form-control">
-		   </div>
-		   <div id="buttons">
-		   <input id="show-listings" type="button" class="btn btn-primary" value="Show Listings">
+           </div>
+           
+           <div id="sublabel33">
 
-		  </div>
-		  
-		  <div id="buttons">
-		
-		   <input id="hide-listings" type="button" class="btn btn-primary" value="Hide Listings">
+				 
+           <a href="emergency2.php" style="color: #FDFEFE">Switch ON-OFF</a>
 
-		  </div>
-		  
 
-		  
-		  <div id="buttons">
 
-           <input id="zoom-to-area" class="btn btn-primary" type="button" value="Zoom">
-          </div>
+            </div>
+
 		   
 	       </div>
 
@@ -331,7 +351,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         
 		
 		//Change this depending on the name of your PHP or XML file
-        downloadUrl('/LBHS/hospital_maps.xml', function(data) {
+        downloadUrl('MyXmlFile4.xml', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
             Array.prototype.forEach.call(markers, function(markerElem) {
@@ -362,10 +382,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 				  
 
 			        //InfoWindow Content
-
-
-                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = 'saveMapDocInfoPr.php' method = 'post'><input type = 'submit'  class='btn btn-primary'  name = 'submit' value = 'See Dr. " +docFname+"'/> </form>";
-
                     var infowincontent = document.createElement('div');
                     var strong = document.createElement('strong');
                     strong.textContent = "Dr. "+docFname;
@@ -406,7 +422,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
               
               marker.addListener('click', function() {
 			        if (infoWindow.marker != marker) {
-                        infoWindow.setContent(contentAll);
+                        infoWindow.setContent(infowincontent);
                         infoWindow.open(map, marker);
 				
 				      // Make sure the marker property is cleared if the infowindow is closed.
@@ -626,23 +642,25 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		   <div id="back">
 		   
-		           		   <div id="label3">
-		      <div id="sublabel31">
-			      Doctor Around You:<br>
-			  </div>
+		   <div id="sublabel31">
+			      Ambulances Around You
+              </div>
+              <div id="label3">
 			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Working hours:<br>
+			      Name:<br>Distance:<br>Availability:<br>
 				 
 			  </div>
-			  <div id="sublabel33">
 
-				 
-				     <a href="dash2.php" style="color: #FDFEFE">Automatic Scheduling</a>
-				 
-
-				 
-			  </div>
 		   </div>
+           
+           <div id="label3">
+			  <div id="sublabel32">
+			      Name:<br>Distance:<br>Availability:<br>
+				 
+              </div>
+
+
+        </div>
 		   
 		   </div>
 		   <footer class="container-fluid text-center">
