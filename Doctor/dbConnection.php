@@ -3,7 +3,7 @@ function connect(){
     $dbServer="localhost";
 	$username="root";
 	$password="";
-	$dbname="icspro";
+	$dbname="icspro2";
 	
 	$link = mysqli_connect($dbServer,$username,$password,$dbname)
 	        or die("Could not connect");

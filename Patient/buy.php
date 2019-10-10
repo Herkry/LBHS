@@ -1,5 +1,8 @@
 <?php
-// Initialize the session
+//IN THIS PAGE WE WILL SELECT MEDICINE MEANT FOR PATIENTS AND SUGGEST A PHARMACT MEANT FOR THEM
+
+
+//Initialize the session
 session_start();
  
 // Check if the user is logged in, if not then redirect him to login page
@@ -7,6 +10,94 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+//Check whether patient is in an active hospital session at the moment
+//Select from waiting list relation to check the listStatus
+$selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = 'awaiting medication'";
+$rowWaitlistStatus= getData($selectWaitlistStatus); 
+
+//Check whether $rowWaitlistStatus is empty
+if(empty($rowWaitlistStatus)){
+  echo("
+        <script>
+            window.alert('You have not seen the doctor yet so no prescription is available at the moment');
+        </script>
+  ");
+
+  header("Location: home.php");
+}
+
+
+//Define DB Variables
+$patId = $_SESSION["id"];
+$listStatus = "awaiting medication";
+
+//Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
+$selectMedAllocated = "SELECT medName, medDosageAmt FROM medicalrecords WHERE patId = '$patId' AND listStatus = '$listStatus'";
+$rowMedAllocated = getData($selectMedAllocated); 
+
+//Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
+$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocated[0]['medname']' AND medTotAmt >= '$rowMedAllocated[0]['medDosageAmt']' ORDER BY medUnitPrice ASC ";
+$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+
+//Check whether $rowMedAllocatedDetails is empty
+if(empty($rowMedAllocatedDetails)){
+    echo("
+          <script>
+              window.alert('No pharmacy found with the requested medication dosage');
+          </script>
+    ");
+
+    header("Location: home.php");
+}
+
+else
+
+//Calculate price patient will pay for every paharmacy on list
+//Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+$patPharmTotMedCharge = array();
+
+//Declaring some patient variables here
+$patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+
+for($i = 0; $i < $rowMedAllocatedDetails; $i++){
+    $totMedCharge = ($patMedDosageAmt/$rowMedAllocatedDetails[$i]["medUnitAmt"]) * $rowMedAllocatedDetails[$i]["medUnitPrice"];
+    
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
 
 

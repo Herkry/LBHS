@@ -1,14 +1,56 @@
-
 <?php
-// Initialize the session
+//SELECTING FROM WAITING LIST ONLY ONE PATIENT WHO IS TO BE SEEN BY DOC
+//Require
+require("sqlFunctions.php");
+
+//Initialize the session
 session_start();
- 
+
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: login.php");
-    exit;
+  header("location: login.php");
+  exit;
 }
+
+//Defining DB variables
+$docId = $_SESSION["id"];
+$listStatus = "doctor session";
+
+//Selecting from waitlingList relation WHERE listStatus = Appropriate---Only one patient is selected
+$selectPatWaitListId = "SELECT patId FROM waitingList WHERE docId = '$docId' AND listStatus = '$listStatus'";
+$rowPatId = getData($selectPatWaitListId);
+
+//TEST
+//echo("<pre>");
+//print_r($rowPatId);
+//echo("</pre>");
+
+//Get info of patient selected from DB
+//Declare rowPatDetails array to store patient details
+$rowPatDetails = array();
+
+//Get the patDetails from the patients relation----Only one patient is selected
+$patId = $rowPatId[0]["patId"];
+$selectPatDetails = "SELECT * FROM patient WHERE patId = '$patId'";
+$rowPatDetails = getData($selectPatDetails);   
+
+//Selecting past medicalHistory of patient
+//Get the patDetails from the patients relation----Only one patient is selected
+$patId = $rowPatId[0]["patId"];
+$selectPatMedHist = "SELECT * FROM medicalrecords WHERE patId = '$patId'";
+$rowPatMedHist = getData($selectPatMedHist); 
+
+
+
+//NOT DONE HERE
+//Selecting doctor names of doctors who treated the patients
+
+//Selecting hospitals where patient was treated
+
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html>
@@ -129,44 +171,102 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
  
 
-
-
-
-
-
-
-
   <div class="w3-panel">
     <div class="w3-row-padding" style="margin:0 -16px">
 
       <div class="w3-twothird">
-        <h4>Patient Informations</h4>
+        <h4>Patient Information</h4>
         <table class="w3-table w3-striped w3-white">
 
          
 <?php
 
-require_once "dbConnection.php";
-$link = connect();
-$username = $_SESSION["username"];
+//require_once "dbConnection.php";
+//$link = connect();
+//$username = $_SESSION["username"];
 
 
 
 ?>
         </table>
+        <!--Doctor views past medical history of patient-->
+        <h5>Past Medical History</h5>
+        <table class="w3-table w3-striped w3-teal">
 
-        <h5>Edit Patient Prescription</h5>
+          <tr>
+            <th>Record ID</th>
+            <th>Date Created</th>
+            <th>Temperature</th>
+            <th>Blood Pressure</th>
+            <th>Glucose Level</th>
+            <th>BMI</th>
+            <th>Symptoms</th>
+            <th>Illness</th>
+            <th>Medicine Name</th>
+            <th>Doctor Note</th>
+            <th>Doctor</th>
+            <th>Hospital</th>
+          </tr>
+
+
+          <?php
+           
+            //NOT DONE HERE
+            for($i = 0; $i < count($rowPatDetails); $i++ ){
+              echo("
+            
+                <td>
+                </td>
+            
+               <td>
+                </td>
+            
+                <td>
+                </td>
+            
+                <td>
+                </td>
+                <td>
+                </td>
+            
+               <td>
+                </td>
+            
+                <td>
+                </td>
+            
+                <td>
+                </td>
+                <td>
+                </td>
+            
+               <td>
+                </td>
+            
+                <td>
+                </td>
+            
+                <td>
+                </td>
+              ");
+            
+            }
+
+
+
+          ?>
+        </table>
+
+
+        <h5>Doctor's Observation</h5>
         <table class="w3-table w3-striped w3-teal">
         <tr>
 
-        <th>Patient</th>
-        <th>History ID</th>
-        <th>Doc Note</th>
-        <th>Illness</th>
-        <th>Doctor Name</th>
-        <th>Date Created</th>
-        <th>Patient ID</th>
-        <th>Edit</th>
+        <th>Indicate Illness</th>
+        <th>Doctor's Note</th>
+        <th>Medicine Name</th>
+        <th>Intake Instructions</th>
+        <th></th>
 
         </tr>
          
@@ -175,52 +275,51 @@ $username = $_SESSION["username"];
 
 	
 echo ("
- 
-<tr>
-<form method='post'>
-<input type = 'hidden' name = 'orderid' value = '".$row['ID']."'/>
+    <tr>
+     <form method='post' action = 'editPr.php'>
+    ");
 
-<td>
-<input type = 'text' class='form-control'  name = 'temp' placeholder='edit'  value = ''/>
-</td>
 
-<td>
-<input type = 'text' class='form-control'  name = 'bloodP'  placeholder='edit' value = ''/>
-</td>
+for($i = 0; $i < count($rowPatDetails); $i++ ){
+  echo("
+  <input type = 'hidden' name = 'patId' value = '".$rowPatDetails[$i]["patId"]."'/>
 
-<td>
-<input type = 'text' class='form-control'  name = 'bmi' placeholder='edit'  value = ''/>
-</td>
+  <td>
+    <input type = 'text' class='form-control'  name = 'illness' placeholder='Patient Illness' />
+    <!--Removed value attribute in tag as this is a input TEXT tag-->
+  </td>
 
-<td>
-<input type = 'text' class='form-control'  name = 'glcLvl' placeholder='edit'  value = ''/>
-</td>
+  <td>
+    <input type = 'text' class='form-control'  name = 'docNote'  placeholder='Diagnosis' />
+  </td>
 
-<td>
-<input type = 'text' class='form-control'  name = 'symptoms'  placeholder='edit' value = ''/>
-</td>
+  <td>
+    <input type = 'text' class='form-control'  name = 'medName' placeholder='Medicine' />
+  </td>
 
-<td>
-<input type = 'date' class='form-control'  name = 'date_created' placeholder='edit'  value = ''/>
-</td>
+  <td>
+    <input type = 'text' class='form-control'  name = 'intakeInstructions' placeholder='Intake Instructions' />
+  </td>
 
-<td>
-<input type = 'text' class='form-control'  name = 'patId'  placeholder='edit' value = ''/>
-</td>
+  <td>
+  <input type = 'submit' class='form-control'  name = 'submit' />
+  </td>
 
-<td>
-<input type = 'submit' class='btn btn-primary'  name = 'save' value = 'Save'/>
-</td>
-</form>	
-</tr>
-
+  
 ");
+}
+
+echo("
+    </form>	
+    </tr>
+
+    ");
 
 
-$oid = $_POST["orderid"];
-$pending ="pending";
-$sql1 = "UPDATE `clientorders` SET `statu`= 'completed' WHERE ID = '$oid'";
-setData($sql1);
+//$oid = $_POST["orderid"];
+//$pending ="pending";
+//$sql1 = "UPDATE `clientorders` SET `statu`= 'completed' WHERE ID = '$oid'";
+//setData($sql1);
 
 ?>
         </table>
@@ -230,15 +329,6 @@ setData($sql1);
       </div>
     </div>
   </div>
-
-
-
-
-
-
-
-
-
 
 
   <br>
@@ -273,31 +363,32 @@ setData($sql1);
 </div>
 
 <script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
+    // Get the Sidebar
+    var mySidebar = document.getElementById("mySidebar");
 
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
+    // Get the DIV with overlay effect  
+    var overlayBg = document.getElementById("myOverlay");
 
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
+    // Toggle between showing and hiding the sidebar, and add overlay effect
+    function w3_open() {
+    if (mySidebar.style.display === 'block') {
+        mySidebar.style.display = 'none';
+        overlayBg.style.display = "none";
+    } else {
+        mySidebar.style.display = 'block';
+        overlayBg.style.display = "block";
+    }
+    }
+
+    // Close the sidebar with the close button
+    function w3_close() {
+        mySidebar.style.display = "none";
     overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
+    }
 </script>
 
 </body>
+<!--Add Button for Submitting to edit.php-->
 </html>
 
 
