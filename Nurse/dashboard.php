@@ -129,6 +129,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
         <div class="w3-right">
+
           <h3>50</h3>
         </div>
         <div class="w3-clear"></div>
@@ -166,14 +167,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <tr>
 
         <th>Patient</th>
-        <th>Temperature</th>
-        <th>Historic ID</th>
-        <th>Blood Pressure</th>
-        <th>BMI</th>
-        <th>Glucose Level</th>
-        <th>Symptoms</th>
-        <th>Date Created</th>
         <th>Patient ID</th>
+        <th>Doctor Name</th>
+        <th>Specialty</th>
+        <th>Queue</th>
         <th>Edit</th>
 
         </tr>
@@ -182,9 +179,22 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 require_once "dbConnection.php";
 $link = connect();
-$username = $_SESSION["username"];
+$nurseId = $_SESSION["id"];
+$listStatus = "Being Assisted";
+$query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
+$res = $link->query($query);
+while ($r = $res->fetch_assoc()){
 
-$query1 = "SELECT medRecId, temp, bloodP, bmi, glcLvl, symptoms, date_created, patId FROM `medicalrecords` ";
+  $hospId = $r['hospId'];
+
+  $q = "SELECT patId, docId FROM `waitinglist` WHERE hospId = '$hospId' AND listStatus = '$listStatus' ";
+  $res2 = $link->query($q);
+  while ($r2 = $res2->fetch_assoc()){
+
+    $docId = $r2['docId'];
+    $patId = $r2['patId'];
+
+$query1 = "SELECT docLname, docSpecialty, docQueue FROM `doctor` WHERE docId = '$docId' ";
 $result = $link->query($query1);
 
 while ($row = $result->fetch_assoc()){
@@ -195,23 +205,22 @@ while ($row = $result->fetch_assoc()){
 echo ("
 <tr>
 <td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['medRecId']."</td>
-<td>".$row['temp']."</td>
-<td>".$row['bloodP']."</td>
-<td>".$row['bmi']."</td>
-<td>".$row['glcLvl']."</td>
-<td>".$row['symptoms']."</td>
-<td>".$row['date_created']."</td>
-<td>".$row['patId']."</td>
+<td>".$patId."</td>
+<td>".$row['docLname']."</td>
+<td>".$row['docSpecialty']."</td>
+<td>".$row['docQueue']."</td>
+
 <td>
-<form action='nurseAction.php' method='post'>
-<input type = 'hidden' name = 'orderid' value = '".$row['ID']."'/>
+<form action='edit.php' method='post'>
+<input type = 'hidden' name = 'patId' value = '".$patId."'/>
 <input type = 'submit' class='btn btn-primary'  name = 'complete' value = 'consult'/>
 </form>	
 </td>
 </tr> 
 
 ");
+}
+  }
 }
 
 

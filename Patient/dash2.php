@@ -1,25 +1,28 @@
 <?php
 
-require("dbConnection.php");
-//Selecting DOC details to display to patient//
-//Getting DB parameters- patId is gotten from SESSION variable
-$patId = 1;
-$listStatus = "On Nurse Queue";
-//$docId CHECK
 
-//Selecting docId from WaitingList relation where patId= SESSION variable AND listStatus= On nurse queue
-$selectDocId = "SELECT docId FROM waitinglist WHERE patId = '$patId' AND '$listStatus' = 'On Nurse Queue'";
-$rowDocId = getData($selectDocId);
-$docId = $rowDocId[0]['docId'];
+session_start();
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+?>
+
+
+<?php
+//$rowDocId = getData($selectDocId);
+//$docId = $rowDocId[0]['docId'];
 
 //Now select from doctors table all the relevant doc info
-$selectDocInfo = "SELECT docFname, docLname, docPhone, docQueue, docSpecialty, docEmail FROM doctor WHERE docId = '$docId' ";
-$rowDocInfo = getData($selectDocInfo);
+
 
 //Run for Loop to display all docInfo
-for($i = 0; $i < count($rowDocInfo); $i++){
+//for($i = 0; $i < count($rowDocInfo); $i++){
 	//eg rowDocInfo[$i]['docFname']
-}
+//}
 
 //TEST
 //echo("<pre>");
@@ -30,13 +33,7 @@ for($i = 0; $i < count($rowDocInfo); $i++){
 
 
 // Initialize the session
-session_start();
- 
-// Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: login.php");
-    exit;
-}
+
 ?>
 
 
@@ -98,7 +95,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		}
 		
 		#label3{
-      height:200px;
+      height:400px;
 
     
 	  margin-top:20px;
@@ -111,7 +108,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     
 	    margin:auto;
         padding-top:15px;
-	    font-size:30px;
+	    font-size:20px;
 	    font-family: "Angsana New", Angsana, serif;
 	    color: white;
 	    text-align:center;
@@ -127,7 +124,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      margin:auto;
 
      font-family:"Angsana New", Angsana, serif;
-     font-size:22px;
+     font-size:20px;
      text-align: left;
     
      padding:30px;
@@ -212,44 +209,81 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		           		   
 		      <div id="sublabel31">
 			      Appointment Details
-              </div>
-              <div id="label3">
-        <?php
-        echo("        
-        <div id='sublabel32' align = 'center'>
-            
-			      Doctor Name: "        ."   " .$rowDocInfo[0]["docFname"] ." " .$rowDocInfo[0]["docLname"] ."<br>
-            Doctor Specialty: "   ."   "       .$rowDocInfo[0]["docSpecialty"]                         ."<br>
+          </div>
+          <div id="label3">
 
-        </div>
-        ");
-        ?>
 
-		   </div>
+
+
+
+          <?php
+
+
+
+require("sqlFunctions.php");
+$link = connect();
+//Selecting DOC details to display to patient//
+//Getting DB parameters- patId is gotten from SESSION variable
+$patId = $_SESSION["id"];
+$listStatus = "Being Assisted";
+//$docId CHECK
+
+//Selecting docId from WaitingList relation where patId= SESSION variable AND listStatus= On nurse queue
+$selectDocId = "SELECT docId FROM waitinglist WHERE patId = '$patId' AND listStatus = 'Being Assisted'";
+
+$result1 = $link->query($selectDocId);
+
+
+while ($row = $result1->fetch_assoc()){
+  $docId = $row['docId'];
+
+  $link2 = connect();
+  $selectDocInfo = "SELECT docFname, docLname, docPhone, docQueue, docSpecialty, docEmail FROM doctor WHERE docId = '$docId' ";
+  $result2 = $link2->query($selectDocInfo);
+  
+  while ($row2 = $result2->fetch_assoc()){
+
+
+    echo      
+    "<div id='sublabel32' align = 'center'>"."Doctor Name:      ".$row2['docFname']." " .$row2['docLname']."<br>"."Doctor Specialty:      ".$row2['docSpecialty']."<br>"."</div>";
+
+   
+
+    echo "    
+    <div id='sublabel32' align = 'center' style='margin-top:20px;'>
+        Phone: "            .$row2['docPhone']                             ."<br>
+        Email: "            .$row2['docEmail']                             ."<br>
+        Queue: "            .$row2['docQueue']                             ."<br>
+     
+    </div><br>
+    ";
+
+
+  
+  }
+}
+
+?>
+
+
+
+      
+
+		    
            
-           <div id="label3">
-        <?php 
-        echo("    
-			  <div id='sublabel32' align = 'center'>
-            Phone: "            .$rowDocInfo[0]["docPhone"]                             ."<br>
-            Email: "            .$rowDocInfo[0]["docEmail"]                             ."<br>
-            Queue: "            .$rowDocInfo[0]["docQueue"]                             ."<br>
-				 
-        </div><br>
-        ");
-        ?>
+ 
 
           <div id="sublabel33">	
 				     <a href="dash2.php" style="color: #FDFEFE">View Medicine</a>				 
           </div>
 
+        
           </div>
           
           
-          
 		   </div>
-		   <footer class="container-fluid text-center">
-            <p></p>
-        </footer>
+		
+          
+        
 </body>
 </html>

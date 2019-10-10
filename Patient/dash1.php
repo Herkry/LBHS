@@ -1,36 +1,4 @@
 <?php
-require("sqlFunctions.php");
-//Selecting DOC details to display to patient//
-//Getting DB parameters- patId is gotten from SESSION variable
-$patId = 1;
-$listStatus = "On Nurse Queue";
-//$docId CHECK
-
-//Selecting docId from WaitingList relation where patId= SESSION variable AND listStatus= On nurse queue
-$selectDocId = "SELECT docId FROM waitinglist WHERE patId = '$patId' AND '$listStatus' = 'On Nurse Queue'";
-$rowDocId = getData($selectDocId);
-$docId = $rowDocId[0]['docId'];
-
-//Now select from doctors table all the relevant doc info
-$selectDocInfo = "SELECT docFname, docLname, docPhone, docQueue, docSpecialty, docEmail FROM doctor WHERE docId = '$docId' ";
-$rowDocInfo = getData($selectDocInfo);
-
-//Run for Loop to display all docInfo
-for($i = 0; $i < count($rowDocInfo); $i++){
-	//eg rowDocInfo[$i]['docFname']
-}
-
-//TEST
-echo("<pre>");
-print_r($rowDocInfo);
-echo("</pre>");
-
-echo($rowDocInfo[0]["docFname"]);
-
-
-
-
-
 
 // Initialize the session
 session_start();
@@ -178,7 +146,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 	  Geolocation Based Healthcare
 	  <div id="sublabel13">
 		  <img src= "profile.png" height="20" width="20" />
-		  <?php //echo htmlspecialchars($_SESSION["username"]); ?>
+		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
 	  </div>
   </div>
 
@@ -215,19 +183,23 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		           		   
 		      <div id="sublabel31">
-			      <?php echo("<p><b>See Dr. " .$rowDocInfo[0]["docFname"] ." " .$rowDocInfo[0]["docLname"] ."</b></p>");?>
+		          Doctors Around You 
               </div>
               
               <div id="label3">
 			  <div id="sublabel32">
-            Specialty:<?php echo("<p> " .$rowDocInfo[0]["docSpecialty"] ."</p>");?><br>
-            Phone:<?php echo("<p> " .$rowDocInfo[0]["docPhone"] ."</p>");?><br>
-            Email:<?php echo("<p> " .$rowDocInfo[0]["docEmail"] ."</p>");?><br>
-            Queue:<?php echo("<p> " .$rowDocInfo[0]["docQueue"] ."</p>");?><br>
+			      Name:<br>Distance:<br>Working hours:<br>
 				 
 			  </div>
-			  
-		   </div>
+			  <div id="sublabel33">
+
+				 
+				     <a href="dash2.php" style="color: #FDFEFE">Request Appointment</a>
+				 
+
+				 
+			  </div>
+           </div>
            
            <div id="label3">
 			  <div id="sublabel32">

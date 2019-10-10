@@ -29,6 +29,10 @@ function getData($sql){
 	return $rowData;
 	
 }
+
+
+
+
 ?>
 	
 	

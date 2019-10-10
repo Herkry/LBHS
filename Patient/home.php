@@ -159,7 +159,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		}
 
 		footer {
-	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+	  background-color: black;
       padding: 25px;
 	  height: 200px;
     }
@@ -241,6 +241,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 	       </div>
 
 		   <div id="map">
+      
 		   <script>
       /*var customLabel = {
         restaurant: {
@@ -364,7 +365,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 			        //InfoWindow Content
 
 
-                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = 'saveMapDocInfoPr.php' method = 'post'><input type = 'submit'  class='btn btn-primary'  name = 'submit' value = 'See Dr. " +docFname+"'/> </form>";
+                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = 'saveMapDocInfoPr.php' method = 'post'> <input type = 'hidden'   name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
 
                     var infowincontent = document.createElement('div');
                     var strong = document.createElement('strong');
@@ -645,8 +646,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   </div>
 		   
 		   </div>
+
+      
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>
+       
 </body>
 </html>

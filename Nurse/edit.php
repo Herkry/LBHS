@@ -160,37 +160,48 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 require_once "dbConnection.php";
 $link = connect();
-$username = $_SESSION["username"];
+$nurseId = $_SESSION["id"];
+$patId = $_POST['patId'];
+$listStatus = "Being Assisted";
+//----$query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
+//----$res = $link->query($query);
 
-$query1 = "SELECT medRecId, temp, bloodP, bmi, glcLvl, symptoms, date_created, patId FROM `medicalrecords` ";
-$result = $link->query($query1);
+//---while ($r = $res->fetch_assoc()){
 
-while ($row = $result->fetch_assoc()){
+    //---$hospId = $r['hospId'];
 
-	
-	
-	
-echo ("
-<tr>
-<td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['medRecId']."</td>
-<td>".$row['temp']."</td>
-<td>".$row['bloodP']."</td>
-<td>".$row['bmi']."</td>
-<td>".$row['glcLvl']."</td>
-<td>".$row['symptoms']."</td>
-<td>".$row['date_created']."</td>
-<td>".$row['patId']."</td>
+    //-$q = "SELECT patId FROM `waitinglist` WHERE hospId = '$hospId' AND listStatus = '$listStatus' ";
+    //-$res2 = $link->query($q);
+    //-while ($r2 = $res2->fetch_assoc()){
+      //-$patId = $r2['patId'];
+  
 
-</tr> 
+      $query1 = "SELECT medRecId, temp, bloodP, bmi, glcLvl, symptoms, date_created, patId FROM `medicalrecords` WHERE patId = '$patId' ";
+      $result = $link->query($query1);
 
-");
-}
+         while ($row = $result->fetch_assoc()){
 
-$oid = $_POST["orderid"];
-$pending ="pending";
-$sql1 = "UPDATE `clientorders` SET `statu`= 'completed' WHERE ID = '$oid'";
-setData($sql1);
+            echo ("
+            <tr>
+            <td><i class='fa fa-user w3-text-blue w3-large'></i></td>
+            <td>".$row['medRecId']."</td>
+            <td>".$row['temp']."</td>
+            <td>".$row['bloodP']."</td>
+            <td>".$row['bmi']."</td>
+            <td>".$row['glcLvl']."</td>
+            <td>".$row['symptoms']."</td>
+            <td>".$row['date_created']."</td>
+            <td>".$row['patId']."</td>
+            
+            </tr> 
+            
+            ");
+
+          }
+    //-}
+//---}
+
+
 
 ?>
         </table>
@@ -206,8 +217,8 @@ setData($sql1);
         <th>BMI</th>
         <th>Glucose Level</th>
         <th>Symptoms</th>
-        <th>Date Created</th>
-        <th>Patient ID</th>
+      
+    
         <th>Save</th>
 
         </tr>
@@ -219,38 +230,31 @@ setData($sql1);
 echo ("
  
 <tr>
-<form method='post'>
-<input type = 'hidden' name = 'orderid' value = '".$row['ID']."'/>
+<form action='nurseAction.php' method='post' >
 
 <td>
-<input type = 'text' class='form-control'  name = 'temp' placeholder='edit'  value = ''/>
+<input type = 'text' class='form-control'    name = 'temp' placeholder='edit'/>
 </td>
 
 <td>
-<input type = 'text' class='form-control'  name = 'bloodP'  placeholder='edit' value = ''/>
+<input type = 'text' class='form-control'  name = 'bloodP'  placeholder='edit'/>
 </td>
 
 <td>
-<input type = 'text' class='form-control'  name = 'bmi' placeholder='edit'  value = ''/>
+<input type = 'text' class='form-control'  name = 'bmi' placeholder='edit' />
 </td>
 
 <td>
-<input type = 'text' class='form-control'  name = 'glcLvl' placeholder='edit'  value = ''/>
+<input type = 'text' class='form-control'  name = 'glcLvl' placeholder='edit' />
 </td>
 
 <td>
-<input type = 'text' class='form-control'  name = 'symptoms'  placeholder='edit' value = ''/>
+<input type = 'text' class='form-control'  name = 'symptoms'  placeholder='edit' />
 </td>
 
-<td>
-<input type = 'date' class='form-control'  name = 'date_created' placeholder='edit'  value = ''/>
-</td>
 
 <td>
-<input type = 'text' class='form-control'  name = 'patId'  placeholder='edit' value = ''/>
-</td>
-
-<td>
+<input type = 'hidden' name = 'patId' value = '".$patId."'/>
 <input type = 'submit' class='btn btn-primary'  name = 'save' value = 'Save'/>
 </td>
 </form>	
@@ -258,11 +262,6 @@ echo ("
 
 ");
 
-
-$oid = $_POST["orderid"];
-$pending ="pending";
-$sql1 = "UPDATE `clientorders` SET `statu`= 'completed' WHERE ID = '$oid'";
-setData($sql1);
 
 ?>
         </table>
