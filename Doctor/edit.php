@@ -203,6 +203,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
             <th>Symptoms</th>
             <th>Illness</th>
             <th>Medicine Name</th>
+            <th>Intake Instructions</th>
             <th>Doctor Note</th>
             <th>Doctor</th>
             <th>Hospital</th>
@@ -215,39 +216,40 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
             for($i = 0; $i < count($rowPatDetails); $i++ ){
               echo("
             
-                <td>
-                </td>
+                  <td>"
+                  .$rowPatDetails["medRecId"]
+                ."</td>
+                  <td>"
+                  .$rowPatDetails["date_created"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["temp"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["bloodP"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["glcLvl"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["bmi"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["symptoms"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["illness"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["medName"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["intakeInstructions"]
+                ."</td>
+                <td>"
+                  .$rowPatDetails["docNote"]
+                ."</td>
             
-               <td>
-                </td>
-            
-                <td>
-                </td>
-            
-                <td>
-                </td>
-                <td>
-                </td>
-            
-               <td>
-                </td>
-            
-                <td>
-                </td>
-            
-                <td>
-                </td>
-                <td>
-                </td>
-            
-               <td>
-                </td>
-            
-                <td>
-                </td>
-            
-                <td>
-                </td>
               ");
             
             }
