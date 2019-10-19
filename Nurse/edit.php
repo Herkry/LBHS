@@ -139,7 +139,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <div class="w3-row-padding" style="margin:0 -16px">
 
       <div class="w3-twothird">
-        <h4>Medical History</h4>
+        <h3>Medical History</h3>
         <table class="w3-table w3-striped w3-white">
         <tr>
 
@@ -169,6 +169,7 @@ $listStatus = "Being Assisted";
 //---while ($r = $res->fetch_assoc()){
 
     //---$hospId = $r['hospId'];
+
 
     //-$q = "SELECT patId FROM `waitinglist` WHERE hospId = '$hospId' AND listStatus = '$listStatus' ";
     //-$res2 = $link->query($q);
@@ -202,11 +203,10 @@ $listStatus = "Being Assisted";
 //---}
 
 
-
 ?>
-        </table>
+ </table>
 
-        <h5>Edit Patient Medical History</h5>
+        <h3>Edit Patient Medical History</h3>
         <table class="w3-table w3-striped w3-white">
         <tr>
 

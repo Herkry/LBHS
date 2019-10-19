@@ -32,7 +32,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
     // UPDATE PATIENT QUEUE STATUS
     $status = "awaiting doctor";
-    $updatePatientQueue = "UPDATE `waitinglist` SET `listStatus`= '$status' WHERE patId = '$patId'";
+    $listStatus = "Being Assisted";
+    $updatePatientQueue = "UPDATE `waitinglist` SET `listStatus`= '$status' WHERE patId = '$patId' AND `listStatus` = '$listStatus'";
     setData($updatePatientQueue);
 
     header("location: dashboard.php");

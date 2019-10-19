@@ -16,7 +16,7 @@
 			return true;
 		}
 		else{
-			//$err = $link->error;
+			$err = $link->error;
 			return false;
 			// false;
 			

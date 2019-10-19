@@ -1,50 +1,52 @@
 <?php
-//
-
-// Initialize the session
+//SELECTING FROM WAITING LIST ONLY ONE PATIENT WHO IS TO BE SEEN BY DOC
+//Initialize the session
 session_start();
- 
+
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: login.php");
-    exit;
+  header("location: login.php");
+  exit;
 }
 
-//Require
-require("sqlFunctions.php");
+//Defining DB variables
+$docId = $_SESSION["id"];
+$listStatus = "doctor session";
 
-//Selecting from Waiting list relation where listStatus =  APPROPRIATE
-//Defining DB parameters
-$docId =  $_SESSION["id"];
-$listStatus = "awaiting doctor";
+//Selecting from waitlingList relation WHERE listStatus = Appropriate---Only one patient is selected
+$selectPatWaitListId = "SELECT patId FROM waitingList WHERE docId = '$docId' AND listStatus = '$listStatus'";
+$rowPatId = getData($selectPatWaitListId);
 
-//Running Query to select from waitingList 
-$selectPatWaitListIds = "SELECT patId FROM waitingList WHERE docId = '$docId' AND listStatus = '$listStatus'";
-$rowPatIds = getData($selectPatWaitListIds);
-
-//TEST
-//echo($docId);
-//echo("<pre>");
-//print_r($rowPatIds);
-//echo("</pre>");
-
-//Declare array to store all the patDetails from the patIds selected in the above query
+//Get info of patient selected from DB
+//Declare rowPatDetails array to store patient details
 $rowPatDetails = array();
 
-//Get the patDetails from the patients relation
-for($i = 0; $i < count($rowPatIds); $i++){
-    $patId = $rowPatIds[$i]["patId"];
-    $selectPatDetails = "SELECT * FROM patient WHERE patId = '$patId'";
-    $rowPatDetails[$i] = getData($selectPatDetails);   
-}
-//Array rowPatDetails contains the details of the patients allocated to a specific doctor
-//DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//Get the patDetails from the patients relation----Only one patient is selected
+$patId = $rowPatId[0]["patId"];
+$selectPatDetails = "SELECT * FROM patient WHERE patId = '$patId'";
+$rowPatDetails = getData($selectPatDetails);   
 
+//Selecting past medicalHistory of patient
+//Get the patDetails from the patients relation----Only one patient is selected
+$patId = $rowPatId[0]["patId"];
+$selectPatMedHist = "SELECT * FROM medicalrecords WHERE patId = '$patId'";
+$rowPatMedHist = getData($selectPatMedHist); 
+
+
+
+//NOT DONE HERE
+//Selecting doctor names of doctors who treated the patients
+
+//Selecting hospitals where patient was treated
 
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html>
-<title>Doctor Dashboard</title>
+<title>Doctor Edit</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
@@ -126,7 +128,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
+    <a href="dashboard.php" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Queue</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Recent Patients</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  History</a>
@@ -143,21 +145,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+    <h3><b><i class="fa fa-dashboard"></i> Patient</b></h3>
   </header>
 
+     
   <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
-      <div class="w3-container w3-red w3-padding-16">
-        <div class="w3-left"><i class="fa fa-comment w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>52</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Messages</h4>
-      </div>
-    </div>
-
     <div class="w3-quarter">
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
@@ -165,114 +157,143 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
           <h3>50</h3>
         </div>
         <div class="w3-clear"></div>
-        <h4>Queued Patients</h4>
+        <h4>Patient Queue NO</h4>
       </div>
     </div>
   </div>
+ 
 
-      
   <div class="w3-panel">
     <div class="w3-row-padding" style="margin:0 -16px">
 
       <div class="w3-twothird">
-      <h4>Patients</h4>
-      <table class="w3-table w3-striped w3-black">
+        <h4>Patient Informations</h4>
+        <table class="w3-table w3-striped w3-white">
+
+         
+<?php
+
+require_once "dbConnection.php";
+$link = connect();
+$username = $_SESSION["username"];
+
+
+
+?>
+        </table>
+        <!--Doctor views past medical history of patient-->
+        <h5>Past Medical History</h5>
+        <table class="w3-table w3-striped w3-teal">
+
+          <tr>
+            <th>Record ID</th>
+            <th>Date Created</th>
+            <th>Temperature</th>
+            <th>Blood Pressure</th>
+            <th>Glucose Level</th>
+            <th>BMI</th>
+            <th>Symptoms</th>
+            <th>Illness</th>
+            <th>Medicine Name</th>
+            <th>Doctor Note</th>
+            <th>Doctor</th>
+            <th>Hospital</th>
+          </tr>
+
+
+          <?php
+           
+            //NOT DONE HERE
+            for($i = 0; $i < count($rowPatDetails); $i++ ){
+              echo("
+            
+                <td>
+                </td>
+            
+               <td>
+                </td>
+            
+                <td>
+                </td>
+            
+                <td>
+                </td>
+              ");
+            
+            }
+
+
+
+          ?>
+        </table>
+
+
+        <h5>Doctor's Observation</h5>
+        <table class="w3-table w3-striped w3-teal">
         <tr>
 
-        <tr>
-
-        <th>Patient Name</th>
-        <th>Patient DOB</th>
-        <th>Patient Phone</th>
-        <th>Patient Email</th>
-
-</tr>
+        <th>Indicate Illness</th>
+        <th>Doctor's Note</th>
+        <th>Medicine Name</th>
+        <th>Intake Instructions</th>
 
         </tr>
          
 <?php
 
 
-/*
-require_once "dbConnection.php";
-$link = connect();
-$username = $_SESSION["username"];
-
-$query1 = "SELECT medRecId, docNote, illness, date_created, docName, patId FROM `medicalrecords` ";
-$result = $link->query($query1);
-
-while ($row = $result->fetch_assoc()){
-
-	
-	
 	
 echo ("
-<tr class='w3-pale-blue'>
-<td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['medRecId']."</td>
-<td>".$row['docNote']."</td>
-<td>".$row['illness']."</td>
+    <tr>
+     <form method='post' action = 'editPr.php'>
+    ");
 
-<td>".$row['date_created']."</td>
-<td>".$row['docName']."</td>
-<td>".$row['patId']."</td>
-<td>
-<form action='docAction.php' method='post'>
-<input type = 'hidden' name = 'orderid' value = '".$row['ID']."'/>
-<input type = 'submit' class='btn btn-primary'  name = 'complete' value = 'consult'/>
-</form>	
-</td>
-</tr> 
 
+for($i = 0; $i < count($rowPatDetails); $i++ ){
+  echo("
+  <input type = 'hidden' name = 'patId' value = '".$rowPatDetails[$i]["patId"]."'/>
+
+  <td>
+    <input type = 'text' class='form-control'  name = 'illness' placeholder='Patient Illness' />
+    <!--Removed value attribute in tag as this is a input TEXT tag-->
+  </td>
+
+  <td>
+    <input type = 'text' class='form-control'  name = 'docNote'  placeholder='Diagnosis' />
+  </td>
+
+  <td>
+    <input type = 'text' class='form-control'  name = 'medName' placeholder='Medicine' />
+  </td>
+
+  <td>
+    <input type = 'text' class='form-control'  name = 'intakeInstructions' placeholder='Intake Instructions' />
+  </td>
+
+  
 ");
 }
-*/
 
-foreach ($rowPatDetails as $row){
-  echo ("
-    <tr class='w3-pale-blue'>
-    <td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-    <td>".$row[0]['patFname']."</td>
-    <td>".$row[0]['patDOB']."</td>
-    <td>".$row[0]['patPhone']."</td>
-    <td>".$row[0]['patEmail']."</td>
-
-    <td>
-    <form action='dashboardPr.php' method='post'>
-      <input type = 'hidden' name = 'patInSessionId' value = '" .$row[0]['patId'] ."'/>
-      <input type = 'submit' class='btn btn-primary'  name = 'Consult' value = 'Consult'/>
+echo("
     </form>	
-    </td>
+    </tr>
 
-    </tr> 
+    ");
 
-");
 
-}
+//$oid = $_POST["orderid"];
+//$pending ="pending";
+//$sql1 = "UPDATE `clientorders` SET `statu`= 'completed' WHERE ID = '$oid'";
+//setData($sql1);
 
 ?>
         </table>
+
+
+
       </div>
     </div>
   </div>
-
-  
-    <hr>
-  <div class="w3-container">
-    <h5>General Stats</h5>
-    <p>New Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
-    </div>
-
-    <p>Current Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
-</div>
-</div>
-
-  <hr>
-
 
 
   <br>
@@ -307,30 +328,32 @@ foreach ($rowPatDetails as $row){
 </div>
 
 <script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
+    // Get the Sidebar
+    var mySidebar = document.getElementById("mySidebar");
 
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
+    // Get the DIV with overlay effect  
+    var overlayBg = document.getElementById("myOverlay");
 
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
+    // Toggle between showing and hiding the sidebar, and add overlay effect
+    function w3_open() {
+    if (mySidebar.style.display === 'block') {
+        mySidebar.style.display = 'none';
+        overlayBg.style.display = "none";
+    } else {
+        mySidebar.style.display = 'block';
+        overlayBg.style.display = "block";
+    }
+    }
+
+    // Close the sidebar with the close button
+    function w3_close() {
+        mySidebar.style.display = "none";
     overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
+    }
 </script>
 
 </body>
+<!--Add Button for Submitting to edit.php-->
 </html>
+
 

@@ -40,7 +40,7 @@ while ($row = $result1->fetch_assoc()){
     $hospId = $row['hospId'];
 
     // Checker 
-    $checker = mysqli_query($link, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND docId = '$docId' OR hospId = '$hospId' AND listStatus = '$listStatus' ");
+    $checker = mysqli_query($link, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' ");
     if(mysqli_num_rows($checker)==0){
         $insertPatWaitingList = "INSERT INTO waitinglist(docId, patId, hospId, listStatus, appointment_date) VALUES('$docId', '$patId', '$hospId' ,'$listStatus', now())";
         setData($insertPatWaitingList);
