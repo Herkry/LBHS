@@ -63,7 +63,6 @@ $patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
 
 for($i = 0; $i < $rowMedAllocatedDetails; $i++){
     $totMedCharge = ($patMedDosageAmt/$rowMedAllocatedDetails[$i]["medUnitAmt"]) * $rowMedAllocatedDetails[$i]["medUnitPrice"];
-    
 } 
 
 
