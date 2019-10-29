@@ -1,4 +1,5 @@
 <?php
+require("sqlFunctions.php");
 //IN THIS PAGE WE WILL SELECT MEDICINE MEANT FOR PATIENTS AND SUGGEST A PHARMACT MEANT FOR THEM
 
 
@@ -11,86 +12,129 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-//Check whether patient is in an active hospital session at the moment
-//Select from waiting list relation to check the listStatus
-$selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = 'awaiting medication'";
-$rowWaitlistStatus= getData($selectWaitlistStatus); 
+// $patId = $_SESSION["id"];
 
-//Check whether $rowWaitlistStatus is empty
-if(empty($rowWaitlistStatus)){
-  echo("
-        <script>
-            window.alert('You have not seen the doctor yet so no prescription is available at the moment');
-        </script>
-  ");
+// //----Check whether patient is in an active hospital session at the moment
+// //------Select from waiting list relation to check the listStatus
 
-  header("Location: home.php");
-}
+// require_once "dbConnection.php";
+// $link = connect();
+
+
+// $selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = 'awaiting medication'";
+// $rowWaitlistStatus= getData($selectWaitlistStatus); 
+
+// //Check whether $rowWaitlistStatus is empty
+// if(empty($rowWaitlistStatus)){
+//   echo("
+//         <script>
+//             window.alert('You have not seen the doctor yet so no prescription is available at the moment');
+//         </script>
+//   ");
+
+//   header("Location: home.php");
+// }
+
+
+// //Define DB Variables
+// $patId = $_SESSION["id"];
+// $listStatus = "awaiting medication";
+
+// //Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
+// $selectMedAllocated = "SELECT medName, medDosageAmt FROM medicalrecords WHERE patId = '$patId' AND listStatus = '$listStatus'";
+// $rowMedAllocated = getData($selectMedAllocated); 
+
+// //Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
+// $selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocated[0]['medname']' AND medTotAmt >= '$rowMedAllocated[0]['medDosageAmt']' ORDER BY medUnitPrice ASC ";
+// $rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+
+// //Check whether $rowMedAllocatedDetails is empty
+// if(empty($rowMedAllocatedDetails)){
+//     echo("
+//           <script>
+//               window.alert('No pharmacy found with the requested medication dosage');
+//           </script>
+//     ");
+
+//     header("Location: home.php");
+// }
+
+// else
+
+// //Calculate price patient will pay for every paharmacy on list
+// //Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+// $patPharmTotMedCharge = array();
+
+// //Declaring some patient variables here
+// $patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+
+// for($i = 0; $i < $rowMedAllocatedDetails; $i++){
+//     $totMedCharge = ($patMedDosageAmt/$rowMedAllocatedDetails[$i]["medUnitAmt"]) * $rowMedAllocatedDetails[$i]["medUnitPrice"];
+    
+// } 
+
+
+
+
 
 
 //Define DB Variables
 $patId = $_SESSION["id"];
-$listStatus = "awaiting medication";
+$medRecStatus = "awaiting medication";
 
 //Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
-$selectMedAllocated = "SELECT medName, medDosageAmt FROM medicalrecords WHERE patId = '$patId' AND listStatus = '$listStatus'";
+$selectMedAllocated = "SELECT medName, medDosageAmt FROM medicalrecords WHERE patId = '$patId' AND medRecStatus = '$medRecStatus'";
 $rowMedAllocated = getData($selectMedAllocated); 
 
 //Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
-$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocated[0]['medname']' AND medTotAmt >= '$rowMedAllocated[0]['medDosageAmt']' ORDER BY medUnitPrice ASC ";
-$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+$rowMedAllocatedName = $rowMedAllocated[0]['medName'];
+$rowMedAllocatedDosageAmount = $rowMedAllocated[0]['medDosageAmt'];
+$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocatedName' AND medTotAmt >= '$rowMedAllocatedDosageAmount' ORDER BY medUnitCharge ASC ";
+$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);//rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
 
 //Check whether $rowMedAllocatedDetails is empty
 if(empty($rowMedAllocatedDetails)){
     echo("
           <script>
               window.alert('No pharmacy found with the requested medication dosage');
+              window.location.replace('prescription.php');
           </script>
     ");
 
-    header("Location: home.php");
+    
+    //header("Location: home.php");
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-else
 
-//Calculate price patient will pay for every paharmacy on list
-//Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+//Calculate price patient will pay for every pharmacy on list
+//Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails and which stores the pharmacy details and total charges for patient
 $patPharmTotMedCharge = array();
 
 //Declaring some patient variables here
 $patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
 
 
-for($i = 0; $i < $rowMedAllocatedDetails; $i++){
-    $totMedCharge = ($patMedDosageAmt/$rowMedAllocatedDetails[$i]["medUnitAmt"]) * $rowMedAllocatedDetails[$i]["medUnitPrice"];
+for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+    $totMedCharge = $patMedDosageAmt * $rowMedAllocatedDetails[$i]["medUnitCharge"];
+    $patPharmTotMedCharge[$i] =  $totMedCharge;
+}
+
+//Selecting pharm names according to the pharmIds in $rowMedAllocatedDetails array, array will be ordered same as rowMedllocatedDetails array and $patPharmTotMedCharge array as well
+
+//Declaring array to hold pharmacy names
+$pharmNames = array();
+
+for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+    //Selecting from pharmacist relation ONLY ONE record of the pharmId specified
+    $rowMedAllocatedPharmId = $rowMedAllocatedDetails[$i]['pharmId'];
+    $selectPharmDetails = "SELECT * FROM pharmacy WHERE pharmId = '$rowMedAllocatedPharmId' ";
+    $rowPharmDetails = getData($selectPharmDetails);
     
-} 
+    $pharmNames[$i] = $rowPharmDetails[0]["pharmName"];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
@@ -194,25 +238,48 @@ for($i = 0; $i < $rowMedAllocatedDetails; $i++){
      padding:30px;
      color:white;
      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-     border-radius: 25px;
+    
      }
 
 #sublabel33{
      width:250px;
      height:50px;
-     margin-top:20px;
-     margin-bottom:20px;
+    
+  
      margin:auto;
-     padding-top:11px;
+     padding-top:7px;
      text-align: center;
-     font-family: "Angsana New", Angsana, serif;
+    
      font-size:20px;
-     border-radius: 25px;
-     background-color: #CB4335;
+     border: 1px solid;
+     
     
     
 }
 
+.notification {
+  background-color: #0B0B3B;
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  position: relative;
+  display: inline-block;
+
+}
+
+.notification:hover {
+  background: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
 
 
 		footer {
@@ -234,10 +301,7 @@ for($i = 0; $i < $rowMedAllocatedDetails; $i++){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
-	  </div>
+	  <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
   </div>
 
 </div>
@@ -253,9 +317,10 @@ for($i = 0; $i < $rowMedAllocatedDetails; $i++){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li ><a href="#" style="color: white;">Appointments</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-        <li class="active"><a href="prescription.php"style="color: white;">Prescription</a></li>
+        
         <li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -268,60 +333,81 @@ for($i = 0; $i < $rowMedAllocatedDetails; $i++){
 
 
 		   
-		   
-		   <div id="back">
-		   
-		           		   
-		      <div id="sublabel31">
-			      Pharmacy List
-              </div>
-              <div id="label3">
-			  <div id="sublabel32">
-			      Pharmacy Name:<br>Medicine Price:<br>Working hours:<br>
-				 
-			  </div>
-			  <div id="sublabel33">
-
-				 
-				     <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
-				 
-
-				 
-			  </div>
-		   </div>
-           
-           <div id="label3">
-			  <div id="sublabel32">
+		    <!--From Here-->
+        <div id="back">
+          
+          
+          <div id="sublabel31">
+              Pharmacies
+          </div>
+         
+          <?php 
+  
+          for($i = 0; $i < count($pharmNames); $i++ ){//for loop start
+          
+          ?>
+         
+                   
+            <div id="label3">
+                
+                <div id="sublabel32">
+                    Pharmacy Name:   <?php echo($pharmNames[$i])?>                <br>
+                    Cost:            <?php echo($patPharmTotMedCharge[$i])?>      <br>
+                </div>
+  
+                <div id="sublabel33">
+                  <form action = "buy1.php" method = "POST">
+                    <!-- <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a> -->
+                    <input type = "hidden" name = "pharmName" value = "<?php echo($pharmNames[$i]) ?>"> 
+                    <input type = "hidden" name = "medCost" value = "<?php echo($patPharmTotMedCharge[$i]) ?>">
+                    <input style = "color: #FDFEFE" type = "submit" name = "Select" value = "Select" class="btn btn-primary"  >
+                  </form>
+                </div>
+            
+            </div>
+             
+             <!-- <div id="label3">
+              <div id="sublabel32">
               Pharmacy Name:<br>Medicine Price:<br>Working hours:<br>
-				 
-			  </div>
-			  <div id="sublabel33">
-
-				 
-				     <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
-				 
-
-				 
-			  </div>
-           </div>
            
-           <div id="label3">
-			  <div id="sublabel32">
-			      Pharmacy Name:<br>Medicine Price:<br>Working hours:<br>
-				 
-			  </div>
-			  <div id="sublabel33">
+          </div>
+          <div id="sublabel33">
+  
+           
+               <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
+           
+  
+           
+          </div>
+             </div>
+             
+             <div id="label3">
+          <div id="sublabel32">
+              Pharmacy Name:<br>Medicine Price:<br>Working hours:<br>
+           
+          </div>
+          <div id="sublabel33">
+  
+           
+               <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
+           
+  
+           
+          </div>
+         </div> -->
+  
+          <?php 
+  
+            }//for loop end
+  
+          ?>
+  
+  
+         </div>
+         <!--To Here-->
+  
 
-				 
-				     <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
-				 
-
-				 
-			  </div>
-		   </div>
-		   </div>
-		   <footer class="container-fluid text-center">
-            <p>Footer Text</p>
-        </footer>
+       <!--The footer is here-->
+		  
 </body>
 </html>

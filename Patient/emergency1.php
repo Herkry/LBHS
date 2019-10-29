@@ -148,9 +148,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      #sublabel33{
      width:250px;
      height:50px;
-     float:left;
-     margin-top: 15px;
-     margin-left:20px;
+     
+     margin: 10px;
+    
      padding-top:11px;
      text-align: center;
      font-family: "Angsana New", Angsana, serif;
@@ -180,6 +180,32 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		  
 		}
 
+
+    .notification {
+  background-color: #0B0B3B;
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  position: relative;
+  display: inline-block;
+
+}
+
+.notification:hover {
+  background: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
+
+
 		#radius{
 			float: left;
 			padding-top:10px;
@@ -189,13 +215,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		}
 
 
+	
 		footer {
-	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+	  background-color: black;
       padding: 25px;
-	  height: 100px;
+	  height: 70px;
     }
-
-
 
 
 	
@@ -207,10 +232,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
-	  </div>
+    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
   </div>
 
 </div>
@@ -226,9 +248,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li><a href="dash1.php" style="color: white;">Appointments</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li class="active"><a href="#"style="color: white;">Emergency</a></li>
-        <li><a href="prescription.php"style="color: white;">Prescription</a></li>
+      
         <li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -243,10 +266,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 
 		   
-		   <div id="radius" class="form-group">
-                <label>Radius</label>
-				<input type="text" name="search" class="form-control">
-           </div>
+	
            
            <div id="sublabel33">
 
@@ -639,30 +659,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </script>
        </div>
 		   
-		   
-		   <div id="back">
-		   
-		   <div id="sublabel31">
-			      Ambulances Around You
-              </div>
-              <div id="label3">
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Availability:<br>
-				 
-			  </div>
 
-		   </div>
-           
-           <div id="label3">
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Availability:<br>
-				 
-              </div>
-
-
-        </div>
-		   
-		   </div>
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>

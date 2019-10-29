@@ -11,7 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <!DOCTYPE html>
 <html>
-<title>Pharmacy Dashboard</title>
+<title>Hospital Nurses</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
@@ -21,6 +21,59 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Patient per Day'],
+          ['Doctor1',     11],
+          ['Doctor2',      2],
+          ['Doctor3',  2],
+          ['Doctor4', 2],
+          ['Doctor5',    7]
+        ]);
+
+        var options = {
+          title: 'Doctor Productivity'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+
+<script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Patient per Day'],
+          ['Nurse1',     11],
+          ['Nurse2',      2],
+          ['Nurse3',  2],
+          ['Nurse4', 2],
+          ['Nurse5',    7]
+        ]);
+
+        var options = {
+          title: 'Nurse Productivity'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
 <style>
 <body class="w3-light-grey">
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
@@ -36,6 +89,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       font-size:20px;
 
     }
+
+    @media,
+          {
+          #piechart1{ margin-right:10px; }
+          #piechart2{ margin-right:10px; }
+          }
 	</style>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
@@ -93,10 +152,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Queue</a>
-    <a href="stock.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  My Stock</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  History</a>
+    <a href="dashboard.php" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
+    <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
+    <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
+    <a href="stats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Reports</a>
+    <a href="doc-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Doctor</a>
+    <a href="nurse-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Nurse</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
   </div>
 </nav>
@@ -108,123 +170,90 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:300px;margin-top:43px;">
 
-  <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
-  </header>
+<div class="w3-panel">
+<div class="w3-row-padding" style="margin:0 -16px">
 
-  <div class="w3-row-padding w3-margin-bottom">
+<div class="w3-twothird">
+      <h4>Nurses List</h4>
+      <table class="w3-table  w3-pale-blue">  
+      <tr>
+      <th>Nurse Id</th>
+      <th>Nurse First Name</th>
+      <th>Nurse Last Name</th>
+      <th>Nurse Phone Number</th>
+      <th>Nurse Email</th>
+  
+      <th>Edit Action</th>
+      <th>Delete Action</th>
+  
+  
 
-
-    <div class="w3-quarter">
-      <div class="w3-container w3-orange w3-text-white w3-padding-16">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>50</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Queued Patients</h4>
-      </div>
-    </div>
-  </div>
-
-      
-  <div class="w3-panel">
-    <div class="w3-row-padding" style="margin:0 -16px">
-
-      <div class="w3-twothird">
-        <h4>Patient Requests</h4>
-        <table class="w3-table w3-striped w3-black">
-        <tr>
-        <th>Patient Request</th>
-        <th>Request ID</th>
-        <th>Patient ID</th>
-        <th>Medicine Name</th>
-        <th>Request Status</th>
-        <th>Request Time</th>
-    
-        
-
-
-        </tr>
-         
+      </tr>
+       
 <?php
 
 require_once "dbConnection.php";
 $link = connect();
-$pharmId = $_SESSION["id"];
+$hospId = $_SESSION["id"];
 
-$query = "SELECT pharmacyRequestId, patId, medId, requestStatus, timeOfRequest FROM `pharmacyrequests` WHERE pharmId = '$pharmId' AND requestStatus = 'awaiting pharmacist' ";
+$query = "SELECT nurseId, nurseFname, nurseLname, nursePhone, nurseEmail FROM `nurse` WHERE hospId = '$hospId'";
 $result = $link->query($query);
 
 while ($row = $result->fetch_assoc()){
-  $medId = $row['medId'];
-  $subquery = "SELECT medName FROM `medicine` WHERE medId = '$medId'";
-  $subresult = $link->query($subquery);
 
-  while ($subrow = $subresult->fetch_assoc()){
 
-	
-	
-	
+  
+  
 echo ("
 <tr class='w3-pale-blue'>
-<td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['pharmacyRequestId']."</td>
-<td>".$row['patId']."</td>
 
-<td>".$subrow['medName']."</td>
-<td>".$row['requestStatus']."</td>
-<td>".$row['timeOfRequest']."</td>
+<td>".$row['nurseId']."</td>
+<td>".$row['nurseFname']."</td>
+
+<td>".$row['nurseLname']."</td>
+<td>".$row['nursePhone']."</td>
+<td>".$row['nurseEmail']."</td>
+<td>
+<form action='updatenurse.php' method='post'>
+<input type = 'hidden' name = 'nurseId' value = '".$row['nurseId']."'/>
+<input type = 'submit' class='btn btn-primary'  name = 'edit' value = 'edit'/>
+</form>	
+</td>
 <td>
 <form action='' method='post'>
-<input type = 'hidden' name = 'patId' value = '".$row['patId']."'/>
-<input type = 'submit' class='btn btn-primary'  name = 'confirm' value = 'confirm'/>
+<input type = 'hidden' name = 'nurseId' value = '".$row['nurseId']."'/>
+<input type = 'submit' class='btn btn-primary'  name = 'delete' value = 'delete'/>
 </form>	
 </td>
 </tr> 
 
 ");
 }
-}
 
-if(isset($_POST['confirm'])){
-  $patId = $_POST['patId'];
-  $requestStatus = 'awaiting pharmacist';
-  $updateStatus = "UPDATE pharmacyrequests SET requestStatus = 'Done' WHERE patId ='$patId' AND requestStatus = '$requestStatus' ";
-  setData($updateStatus);
-  echo("<script> window.location.replace('dashboard.php'); </script>");
-}
+
+
+
+if(isset($_POST['delete'])){
+    $nurseId = $_POST['nurseId'];
+    $deleteData = "DELETE FROM nurse WHERE nurseId = '$nurseId'";
+    setData($deleteData);
+    echo("<script> window.location.replace('nurses.php'); </script>");
+ }
+ 
 
 
 
 
 ?>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  
-    <hr>
-  <div class="w3-container">
-    <h5>General Stats</h5>
-    <p>Served Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
+      </table>
     </div>
 
-    <p>Remaining Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
+    </div>
+
 </div>
 </div>
 
-  <hr>
-
-
-
-  <br>
+<footer class="w3-container w3-padding-16 w3-light-grey">
   <div class="w3-container w3-dark-grey w3-padding-32">
     <div class="w3-row">
       <div class="w3-container w3-third">
@@ -248,6 +277,7 @@ if(isset($_POST['confirm'])){
       </div>
     </div>
   </div>
+  </footer>
 
   <!-- Footer -->
 

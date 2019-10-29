@@ -14,7 +14,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <?php
 // Include config file
 require_once "config.php";
-
+require_once "sendemail.php";
+$sender = $_SESSION["username"];
  
 // Define variables and initialize with empty values
 $fName = $lName = $username = $docSpecialty = $docPhone	= $password = $confirm_password = "";
@@ -192,27 +193,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         mysqli_stmt_close($stmt);
     }
     
-    // Validate password
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter a password.";     
-    } elseif(strlen(trim($_POST["password"])) < 6){
-        $password_err = "Password must have atleast 6 characters.";
-    } else{
-        $password = trim($_POST["password"]);
-    }
-    
-    // Validate confirm password
-    if(empty(trim($_POST["confirm_password"]))){
-        $confirm_password_err = "Please confirm password.";     
-    } else{
-        $confirm_password = trim($_POST["confirm_password"]);
-        if(empty($password_err) && ($password != $confirm_password)){
-            $confirm_password_err = "Password did not match.";
-        }
-    }
-    
+
+  
     // Check input errors before inserting in database
-    if( empty($fName_err) && empty($lName_err) && empty($username_err) &&   empty($docSpecialty_err)  &&  empty($docPhone_err)  && empty($password_err) && empty($confirm_password_err)){
+    if( empty($fName_err) && empty($lName_err) && empty($username_err) &&   empty($docSpecialty_err)  &&  empty($docPhone_err)){
         
         // Prepare an insert statement
         $sql = "INSERT INTO doctor (docFname, docLname, docSpecialty, docPhone	, docEmail, hospId, docPassword) VALUES (?,?,?,?,?,?,?)";
@@ -227,13 +211,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_username = $username;
             $param_docSpecialty= $docSpecialty;
             $param_docPhone	= $docPhone	;
+            $password = rand(15,35);
             $param_hospId = $_SESSION["id"];
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                header("location: /LBHS/patMapTest.php");
+            
+                sendemail($sender, $username, $password);
+                //header("location: /LBHS/patMapTest.php");
+                
+                echo("<script> window.location.replace('/LBHS/patMapTest.php'); </script>");
             } else{
                 echo "Something went wrong. Please try again later.";
             }
@@ -380,9 +368,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
     <a href="dashboard.php" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
+    <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
+    <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
+    <a href="stats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Reports</a>
     <a href="doc-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Doctor</a>
     <a href="nurse-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Nurse</a>
@@ -438,17 +426,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			    <span class="help-block"><?php echo $docPhone_err; ?></span>
 			</div>
 
-        			
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
-                <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
-                <label>Confirm Password</label>
-                <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
-                <span class="help-block"><?php echo $confirm_password_err; ?></span>
-            </div>
+
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-default" value="Reset">

@@ -11,7 +11,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <!DOCTYPE html>
 <html>
-<title>Pharmacy Dashboard</title>
+<head>
+<title>Update Doctor</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
@@ -21,6 +22,32 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Patient per Day'],
+          ['Medicine1',     11],
+          ['Medicine2',      2],
+          ['Medicine3',  2],
+          ['Medicine4', 2],
+          ['Medicine5',    7]
+        ]);
+
+        var options = {
+          title: 'Medicine Quantities'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+        chart.draw(data, options);
+      }
+    </script>
 <style>
 <body class="w3-light-grey">
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
@@ -37,6 +64,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
     }
 	</style>
+    </head>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
@@ -93,10 +121,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Queue</a>
-    <a href="stock.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  My Stock</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  History</a>
+    <a href="dashboard.php" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
+    <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
+    <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
+    <a href="stats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Reports</a>
+    <a href="doc-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Doctor</a>
+    <a href="nurse-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Nurse</a>
     <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
   </div>
 </nav>
@@ -106,45 +137,37 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:300px;margin-top:43px;">
+<div class="w3-main" style="margin-left:300px;margin-top:10px;">
 
   <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  <header class="w3-container" style="padding-top:15px">
+    <h5><b> Updating Doctor</b></h5>
   </header>
+    
+  
 
   <div class="w3-row-padding w3-margin-bottom">
 
 
-    <div class="w3-quarter">
-      <div class="w3-container w3-orange w3-text-white w3-padding-16">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>50</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Queued Patients</h4>
-      </div>
-    </div>
-  </div>
 
-      
+ 
   <div class="w3-panel">
     <div class="w3-row-padding" style="margin:0 -16px">
 
-      <div class="w3-twothird">
-        <h4>Patient Requests</h4>
-        <table class="w3-table w3-striped w3-black">
+  <div class="w3-twothird">
+        <h4>Update Doctor's Details</h4>
+        <table class="w3-table w3-striped w3-pale-blue">
         <tr>
-        <th>Patient Request</th>
-        <th>Request ID</th>
-        <th>Patient ID</th>
-        <th>Medicine Name</th>
-        <th>Request Status</th>
-        <th>Request Time</th>
-    
-        
+        <th>Doctor Id</th>
+      <th>Doctor First Name</th>
+      <th>Doctor Last Name</th>
+      <th>Doctor Phone Number</th>
+      <th>Doctor Specialty</th>
+      <th>Doctor Email</th>
+      <th>Doctor Queue</th>
 
+        
+      
 
         </tr>
          
@@ -152,75 +175,115 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 require_once "dbConnection.php";
 $link = connect();
-$pharmId = $_SESSION["id"];
-
-$query = "SELECT pharmacyRequestId, patId, medId, requestStatus, timeOfRequest FROM `pharmacyrequests` WHERE pharmId = '$pharmId' AND requestStatus = 'awaiting pharmacist' ";
+$hospId = $_SESSION["id"];
+if(isset($_POST["docId"])){
+$docId = $_POST["docId"];
+$query = "SELECT docId, docFname, docLname, docPhone, docSpecialty, docEmail, docQueue FROM `doctor` WHERE hospId = '$hospId' AND docId = '$docId' ";
 $result = $link->query($query);
 
 while ($row = $result->fetch_assoc()){
-  $medId = $row['medId'];
-  $subquery = "SELECT medName FROM `medicine` WHERE medId = '$medId'";
-  $subresult = $link->query($subquery);
 
-  while ($subrow = $subresult->fetch_assoc()){
 
-	
 	
 	
 echo ("
 <tr class='w3-pale-blue'>
-<td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['pharmacyRequestId']."</td>
-<td>".$row['patId']."</td>
 
-<td>".$subrow['medName']."</td>
-<td>".$row['requestStatus']."</td>
-<td>".$row['timeOfRequest']."</td>
-<td>
-<form action='' method='post'>
-<input type = 'hidden' name = 'patId' value = '".$row['patId']."'/>
-<input type = 'submit' class='btn btn-primary'  name = 'confirm' value = 'confirm'/>
-</form>	
-</td>
+<td>".$row['docId']."</td>
+<td>".$row['docFname']."</td>
+
+<td>".$row['docLname']."</td>
+<td>".$row['docPhone']."</td>
+<td>".$row['docSpecialty']."</td>
+<td>".$row['docEmail']."</td>
+<td>".$row['docQueue']."</td>
+
+
 </tr> 
 
 ");
-}
-}
-
-if(isset($_POST['confirm'])){
-  $patId = $_POST['patId'];
-  $requestStatus = 'awaiting pharmacist';
-  $updateStatus = "UPDATE pharmacyrequests SET requestStatus = 'Done' WHERE patId ='$patId' AND requestStatus = '$requestStatus' ";
-  setData($updateStatus);
-  echo("<script> window.location.replace('dashboard.php'); </script>");
-}
 
 
 
 
-?>
+
+echo("
         </table>
       </div>
-    </div>
+
+      </div>
+
+ 
+      <h3>Update Doctor Here</h3>
+        <table class='w3-table w3-striped w3-white'>
+        <tr>
+    
+      
+        <th>Doctor First Name</th>
+        <th>Doctor Last Name</th>
+        <th>Doctor Phone Number</th>
+        <th>Doctor Specialty</th>
+        <th>Doctor Email</th>
+    
+    
+      
+    
+        <th>Action</th>
+
+        </tr>
+         
+");
+
+
+	
+echo ("
+ 
+<tr>
+<form action ='updatedocPr.php' method='post' >
+
+<td>
+<input type = 'text' class='form-control'    name = 'docFname' placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'docLname'  placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'docPhone' placeholder='edit' />
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'docSpecialty' placeholder='edit' />
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'docEmail' placeholder='edit' />
+</td>
+
+
+
+<td>
+
+<input type = 'submit' class='btn btn-primary'  name = 'save' value = 'Save'/>
+<input type = 'hidden' name = 'docId' value = '".$row['docId']."'/>
+</td>
+</form>	
+</tr>
+
+");
+
+
+}
+}
+?>
+        </table>
+
+
+
+
   </div>
 
-  
-    <hr>
-  <div class="w3-container">
-    <h5>General Stats</h5>
-    <p>Served Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
-    </div>
-
-    <p>Remaining Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
-</div>
-</div>
-
-  <hr>
 
 
 

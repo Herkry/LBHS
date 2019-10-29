@@ -11,7 +11,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <!DOCTYPE html>
 <html>
-<title>Pharmacy Dashboard</title>
+<head>
+<title>Update Medicine</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
@@ -21,6 +22,32 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Patient per Day'],
+          ['Medicine1',     11],
+          ['Medicine2',      2],
+          ['Medicine3',  2],
+          ['Medicine4', 2],
+          ['Medicine5',    7]
+        ]);
+
+        var options = {
+          title: 'Medicine Quantities'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+        chart.draw(data, options);
+      }
+    </script>
 <style>
 <body class="w3-light-grey">
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
@@ -37,6 +64,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
     }
 	</style>
+    </head>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
@@ -106,107 +134,14 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:300px;margin-top:43px;">
+<div class="w3-main" style="margin-left:300px;margin-top:10px;">
 
   <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  <header class="w3-container" style="padding-top:15px">
+    <h5><b><i class="fa fa-dashboard"></i> My Stock</b></h5>
   </header>
-
-  <div class="w3-row-padding w3-margin-bottom">
-
-
-    <div class="w3-quarter">
-      <div class="w3-container w3-orange w3-text-white w3-padding-16">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>50</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Queued Patients</h4>
-      </div>
-    </div>
-  </div>
-
-      
-  <div class="w3-panel">
-    <div class="w3-row-padding" style="margin:0 -16px">
-
-      <div class="w3-twothird">
-        <h4>Patient Requests</h4>
-        <table class="w3-table w3-striped w3-black">
-        <tr>
-        <th>Patient Request</th>
-        <th>Request ID</th>
-        <th>Patient ID</th>
-        <th>Medicine Name</th>
-        <th>Request Status</th>
-        <th>Request Time</th>
     
-        
-
-
-        </tr>
-         
-<?php
-
-require_once "dbConnection.php";
-$link = connect();
-$pharmId = $_SESSION["id"];
-
-$query = "SELECT pharmacyRequestId, patId, medId, requestStatus, timeOfRequest FROM `pharmacyrequests` WHERE pharmId = '$pharmId' AND requestStatus = 'awaiting pharmacist' ";
-$result = $link->query($query);
-
-while ($row = $result->fetch_assoc()){
-  $medId = $row['medId'];
-  $subquery = "SELECT medName FROM `medicine` WHERE medId = '$medId'";
-  $subresult = $link->query($subquery);
-
-  while ($subrow = $subresult->fetch_assoc()){
-
-	
-	
-	
-echo ("
-<tr class='w3-pale-blue'>
-<td><i class='fa fa-user w3-text-blue w3-large'></i></td>
-<td>".$row['pharmacyRequestId']."</td>
-<td>".$row['patId']."</td>
-
-<td>".$subrow['medName']."</td>
-<td>".$row['requestStatus']."</td>
-<td>".$row['timeOfRequest']."</td>
-<td>
-<form action='' method='post'>
-<input type = 'hidden' name = 'patId' value = '".$row['patId']."'/>
-<input type = 'submit' class='btn btn-primary'  name = 'confirm' value = 'confirm'/>
-</form>	
-</td>
-</tr> 
-
-");
-}
-}
-
-if(isset($_POST['confirm'])){
-  $patId = $_POST['patId'];
-  $requestStatus = 'awaiting pharmacist';
-  $updateStatus = "UPDATE pharmacyrequests SET requestStatus = 'Done' WHERE patId ='$patId' AND requestStatus = '$requestStatus' ";
-  setData($updateStatus);
-  echo("<script> window.location.replace('dashboard.php'); </script>");
-}
-
-
-
-
-?>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  
-    <hr>
+  <hr>
   <div class="w3-container">
     <h5>General Stats</h5>
     <p>Served Patients</p>
@@ -221,6 +156,135 @@ if(isset($_POST['confirm'])){
 </div>
 
   <hr>
+  <div id="piechart1" style="width: 600px; height: 300px; margin: 0px; padding: 0px; border:1px solid;"></div>
+  <div class="w3-row-padding w3-margin-bottom">
+
+
+
+ 
+  <div class="w3-panel">
+    <div class="w3-row-padding" style="margin:0 -16px">
+
+  <div class="w3-twothird">
+        <h4>Update This Medicine</h4>
+        <table class="w3-table w3-striped w3-pale-blue">
+        <tr>
+        <th>Medicine Id</th>
+        <th>Medicine Name</th>
+        <th>Price per Unit</th>
+        <th>Total Store</th>
+        <th>Charge per Unit</th>
+        <th>Price per One Unit</th>
+        
+      
+
+        </tr>
+         
+<?php
+
+require_once "dbConnection.php";
+$link = connect();
+$pharmId = $_SESSION["id"];
+if(isset($_POST["medId"])){
+$medId = $_POST["medId"];
+$query = "SELECT medId, medName, medUnitPrice, medTotAmt, medUnitAmt, medUnitCharge FROM `medicine` WHERE pharmId = '$pharmId' AND medId = '$medId' ";
+$result = $link->query($query);
+
+while ($row = $result->fetch_assoc()){
+
+
+	
+	
+echo ("
+<tr class='w3-pale-blue'>
+
+<td>".$row['medId']."</td>
+<td>".$row['medName']."</td>
+
+<td>".$row['medUnitPrice']."</td>
+<td>".$row['medTotAmt']."</td>
+<td>".$row['medUnitAmt']."</td>
+<td>".$row['medUnitCharge']."</td>
+
+
+</tr> 
+
+");
+
+
+
+
+
+echo("
+        </table>
+      </div>
+
+      </div>
+
+ 
+      <h3>Update Medicine Data Here</h3>
+        <table class='w3-table w3-striped w3-white'>
+        <tr>
+    
+        <th>Medicine Name</th>
+        <th>Price per Unit</th>
+        <th>Total Store</th>
+        <th>Charge per Unit</th>
+    
+      
+    
+        <th>Action</th>
+
+        </tr>
+         
+");
+
+
+	
+echo ("
+ 
+<tr>
+<form action ='updatePr.php' method='post' >
+
+<td>
+<input type = 'text' class='form-control'    name = 'medName' placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'medUnitPrice'  placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'medTotAmt' placeholder='edit' />
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'medUnitAmt' placeholder='edit' />
+</td>
+
+
+
+<td>
+
+<input type = 'submit' class='btn btn-primary'  name = 'save' value = 'Save'/>
+<input type = 'hidden' name = 'medId' value = '".$row['medId']."'/>
+</td>
+</form>	
+</tr>
+
+");
+
+
+}
+}
+?>
+        </table>
+
+
+
+
+  </div>
+
 
 
 

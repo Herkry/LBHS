@@ -17,6 +17,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="nurseStyle.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
@@ -63,8 +64,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		#back{
 		
 	
-			padding-top: 0px;
-            height: 500px;
+		
+      
         
 			
 		}
@@ -121,15 +122,31 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      background-color: #CB4335;
      }
 
-     table, th, td{
-     opacity: 0.85;
-     margin: 20px;
-     width: 60%;
-     padding: 20px;
-     border: 2px solid #F4D03F;
-     border-collapse: collapse;
-     }
+  
 
+     .notification {
+  background-color: #0B0B3B;
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  position: relative;
+  display: inline-block;
+
+}
+
+.notification:hover {
+  background: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
 
 
 		footer {
@@ -151,10 +168,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
-	  </div>
+    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
   </div>
 
 </div>
@@ -170,9 +184,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li ><a href="dash1.php" style="color: white;">Appointments</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-        <li ><a href="prescription.php"style="color: white;">Prescription</a></li>
+      
         <li class="active"><a href="#"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -188,7 +203,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		   <div id="back">
           <div style = "margin: 20px">	
-            <table>
+            <table class="w3-table w3-striped w3-pale-blue" style="border:1px solid;">
                <tr>
                <h4>This is Your Medical History<h4>
                <th>Patient ID</th>
@@ -201,8 +216,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                <th>Symptoms</th>
                <th>Illness</th>
                <th>Doctor Note</th>
-               <th>Doctor</th>
-               <th>Nurse</th>
+              
+      
 
                <th>Update Date</th>
                </tr>
@@ -227,13 +242,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
               $u8 = $row['illness'];
               $u9 = $row['docNote'];
               $u12 = $row['date_created'];
-              $u10 = $row['docName'];
-              $u11 = $row['nurseName'];
+            
+    
               $u1 = $row['patId'];
 
 
 
-              echo "<tr><td>".$u1."</td><td>".$u2."</td><td>".$u3."</td><td>".$u4."</td><td>".$u5."</td><td>".$u6."</td><td>".$u7."</td><td>".$u8."</td><td>".$u9."</td><td>".$u10."</td><td>".$u11."</td><td>".$u12."</td></tr>";
+              echo "<tr><td>".$u1."</td><td>".$u2."</td><td>".$u3."</td><td>".$u4."</td><td>".$u5."</td><td>".$u6."</td><td>".$u7."</td><td>".$u8."</td><td>".$u9."</td><td>".$u12."</td></tr>";
 
 
               }
@@ -250,8 +265,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 
 		   </div>
-		   <footer class="container-fluid text-center">
-            <p>Footer Text</p>
-        </footer>
+
 </body>
 </html>

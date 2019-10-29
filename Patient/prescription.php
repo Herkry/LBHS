@@ -1,4 +1,5 @@
 <?php
+require("sqlFunctions.php");
 // Initialize the session
 session_start();
  
@@ -7,6 +8,66 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+//Define DB Variables
+$patId = $_SESSION["id"];
+$medRecStatus = "awaiting medication";
+
+//Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
+$selectMedAllocated = "SELECT medName, medDosageAmt, intakeInstructions FROM medicalrecords WHERE patId = '$patId' AND medRecStatus = '$medRecStatus'";
+$rowMedAllocated = getData($selectMedAllocated); 
+
+//TEST
+//print_r($rowMedAllocated);
+
+
+
+//Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
+$rowMedAllocatedName = $rowMedAllocated[0]['medName'];
+$rowMedAllocatedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocatedName' AND medTotAmt >= '$rowMedAllocatedDosageAmt' ORDER BY medUnitCharge ASC ";
+$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+
+//TEST
+//print_r($rowMedAllocatedDetails);
+
+//Check whether $rowMedAllocatedDetails is empty
+
+
+
+
+    //Calculate price patient will pay for every pharmacy on list
+    //Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+    $patPharmTotMedCharge = array();
+
+    //Declaring some patient variables here
+    $patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+
+    for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+        $totMedCharge = $patMedDosageAmt * $rowMedAllocatedDetails[$i]["medUnitCharge"];
+        $patPharmTotMedCharge[$i] =  $totMedCharge; 
+    }
+
+    //Selecting pharm names according to the pharmIds in $rowMedAllocatedDetails array, array will be ordered same as rowMedllocatedDetails array and $patPharmTotMedCharge array as well
+
+    //Declaring array to hold pharmacy names
+    $pharmNames = array();
+
+    for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+        //Selecting from pharmacist relation ONLY ONE record of the pharmId specified
+        $rowMedAllocatedPharmId = $rowMedAllocatedDetails[$i]['pharmId'];
+        $selectPharmDetails = "SELECT * FROM pharmacy WHERE pharmId = '$rowMedAllocatedPharmId' ";
+        $rowPharmDetails = getData($selectPharmDetails);
+    
+        $pharmNames[$i] = $rowPharmDetails[0]["pharmName"];
+    
+    }
+
+
+  
+
 ?>
 
 
@@ -81,20 +142,20 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 	    height:70px;
     
 	    margin:auto;
-        padding-top:15px;
+      padding-top:15px;
 	    font-size:30px;
 	    font-family: "Angsana New", Angsana, serif;
 	    color: white;
 	    text-align:center;
-	
+	    margin-top:90px;
 	    border-radius: 25px;
 	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
       }
    #sublabel32{
      width:600px;
 	   height:150px;
-       margin-top:20px;
-       margin-bottom:20px;
+  
+  
      margin:auto;
 
      font-family:"Angsana New", Angsana, serif;
@@ -104,25 +165,80 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
      padding:30px;
      color:white;
      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-     border-radius: 25px;
+    
+     margin-bottom:20px;
      }
 
      #sublabel33{
      width:250px;
      height:50px;
      margin:auto;
-     margin-top: 10px;
+
      padding-top:11px;
      text-align: center;
      font-family: "Angsana New", Angsana, serif;
      font-size:20px;
-     border-radius: 25px;
+    
      background-color: #CB4335;
+
+     position: fixed;
+     z-index: 99;
+  top: 145px;
+  left: 400px;
+  margin-bottom:10px;
+  height: 50px;
+
+
+}
+#sublabel34{
+  position: fixed;
+  z-index: 99;
+  top: 145px;
+  left: 700px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border: 1px solid;
+  width:250px;
+  padding-top:6.5px;
+  height:50px;
+  margin-bottom:10px;
     
 }
 
+#pa3{
+  border: 1px solid;
+  width:600px;
+  height:60px;
+  position: fixed;
+  z-index: 99;
+  top: 140px;
+  left: 380px;
+}
 
+.notification {
+  background-color: #0B0B3B;
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  position: relative;
+  display: inline-block;
 
+}
+
+.notification:hover {
+  background: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
 
 		footer {
             margin-top:20px;
@@ -143,10 +259,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
-	  </div>
+	  <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
   </div>
 
 </div>
@@ -161,10 +274,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li  ><a href="test.html#myCarousel" style="color: white;">Home</a></li>
-        <li ><a href="dash1.php" style="color: white;">Appointments</a></li>
+        <li  ><a href="home.php" style="color: white;">Home</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-        <li class="active"><a href="prescription.php"style="color: white;">Prescription</a></li>
+  
         <li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -178,49 +292,54 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 		   
 		   
-		   <div id="back">
+<!--From Here-->
+<div id="back">
+
 		   
 		           		   
-		      <div id="sublabel31">
-			      Prescription Details
-              </div>
-              <div id="label3">
-			  <div id="sublabel32">
-			      Medicine:<br>Manufacturer:<br>Type:
-				 
-			  </div>
-
-		   </div>
-           
+       <div id="sublabel31">
+         Prescription Details
+           </div>
            <div id="label3">
-			  <div id="sublabel32">
-			      Dosage:<br>Instructions:
-				 
-			  </div>
+     <div id="sublabel32">
+         Medicine Name:<?php echo($rowMedAllocated[0]["medName"]);?>
+      
+     </div>
 
-           </div>
+    </div>
+        
+      
+     <div id="sublabel32">
+         Dosage:<?php echo($rowMedAllocated[0]["medDosageAmt"]);?><br>
+         Instructions:<?php echo($rowMedAllocated[0]["intakeInstructions"]);?>
+      
+     </div>
 
-           <div id="sublabel33">
+  
+        
+        <div id="sublabel33">
 
-				 
-          <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
-
-
-
-            </div>
-
-            <div id="sublabel33">
-
-				 
-         <a href="buy.php" style="color: #FDFEFE">Select Pharmacy</a>
+      
+           <a href="buy.php" style="color: #FDFEFE">Request Pharmacy</a>
 
 
 
-           </div>
-           
-		   </div>
-		   <footer class="container-fluid text-center">
-            <p>Footer Text</p>
-        </footer>
+         </div>
+
+         <div id="sublabel34">
+
+       <form action = "buy1.php" method = "POST">
+         <!-- <a href="buy.php" style="color: #FDFEFE">Select Pharmacy</a>-->
+         <input type = "hidden" name = "pharmName" value = "<?php echo($pharmNames[0])?>" >
+         <input type = "hidden" name = "medCost" value = "<?php echo($patPharmTotMedCharge[0]) ?>">
+         <input type = "submit" name = "AutoSelection" value = "AutoSelection" class="btn btn-primary">
+       </form> 
+
+
+        </div>
+      
+    </div>
+    <!--To Here-->
+		 <!--Footer start here-->
 </body>
 </html>

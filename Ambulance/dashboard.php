@@ -40,7 +40,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 	  #sublabel13{
 	width:200px;
 	height:20px;
-	border:1px solid;
+
 	margin: 10px;
 	float: right;
 	
@@ -60,18 +60,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
     }
 
-		#back{
-		
 	
-			padding-top: 0px;
-			
-		}
 		
 		#label3{
       height:550px;
       padding-top: 30px;
     
-	  margin-top:20px;
   
       }
   
@@ -110,7 +104,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
       height:200px;
 
     
-	  margin-top:20px;
+	  
   
       }
   
@@ -180,6 +174,15 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		  
 		}
 
+    .buttons{
+			float:left;
+			padding-top:30px;
+			width:200px;
+      position:fixed;
+      top: 170px;
+      right: 30px;
+		}
+
 		#radius{
 			float: left;
 			padding-top:10px;
@@ -190,15 +193,219 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 
 		footer {
-	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+	  background-color: black;
       padding: 25px;
-	  height: 100px;
+	  height: 60px;
     }
 
 
 
 
-	
+    #radio{
+  text-align: left;
+  font-family: Georgia, "Times New Roman", serif;
+  border: 1px solid;
+  margin: 8px;
+  padding-top:10px;
+  padding-left:10px;
+}
+.btn-switch {
+  font-size: 3em;
+	position: relative;
+	display: inline-block;		
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  
+}
+.btn-switch__radio {
+	display: none;
+
+}
+.btn-switch__label {
+	display: inline-block;	
+	padding: .75em .50em .75em .75em;
+	vertical-align: top;
+	font-size: 0.5em;
+	font-weight: 530;
+	line-height: 1;
+	color: #666;
+  cursor: pointer;
+	transition: color .2s ease-in-out;
+}
+.btn-switch__label + .btn-switch__label {
+  padding-right: .25em;
+	padding-left: 25;
+}
+.btn-switch__txt {
+	position: relative;
+	z-index: 2;
+  display: inline-block;
+   min-width: 5em;
+	opacity: 1;
+	pointer-events: none;
+	transition: opacity .2s ease-in-out;
+}
+.btn-switch__radio_no:checked ~ .btn-switch__label_yes .btn-switch__txt,
+.btn-switch__radio_yes:checked ~ .btn-switch__label_no .btn-switch__txt {
+	opacity: 0;
+}
+.btn-switch__label:before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #f0f0f0;
+	border-radius: 1.5em;
+
+  border: 1px solid;
+	box-shadow: inset 0 .0715em .3572em rgba(43,43,43,.05);
+	transition: background .2s ease-in-out;
+}
+.btn-switch__radio_yes:checked ~ .btn-switch__label:before {
+	background: #6ad500;
+}
+.btn-switch__label_no:after {
+	content: "";
+	position: absolute;
+	z-index: 1;
+	top: .2em;
+	bottom: .5em;
+	left: .5em;
+	width: 2em;
+	background: #fff;
+	border-radius: 1em;	
+  
+	pointer-events: none;
+	box-shadow: 0 .1429em .2143em rgba(43,43,43,.2), 0 .3572em .3572em rgba(43,43,43,.1);
+	transition: left .2s ease-in-out, background .2s ease-in-out;
+}
+.btn-switch__radio_yes:checked ~ .btn-switch__label_no:after {
+	left: calc(100% - 2.5em);
+	background: #fff;
+}
+.btn-switch__radio_no:checked ~ .btn-switch__label_yes:before,
+.btn-switch__radio_yes:checked ~ .btn-switch__label_no:before {
+	z-index: 1;
+}
+.btn-switch__radio_yes:checked ~ .btn-switch__label_yes {
+	color: #fff;
+}
+
+    
+
+.notification-box {
+  position: fixed;
+  z-index: 99;
+  top: 150px;
+  right: 90px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+}
+.notification-bell {
+  animation: bell 1s 1s both infinite;
+}
+.notification-bell * {
+  display: block;
+  margin: 0 auto;
+  background-color: #04B4AE;
+  box-shadow: 0px 0px 15px #fff;
+}
+.bell-top {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px 3px 0 0;
+}
+.bell-middle {
+  width: 25px;
+  height: 25px;
+  margin-top: -1px;
+  border-radius: 12.5px 12.5px 0 0;
+}
+.bell-bottom {
+  position: relative;
+  z-index: 0;
+  width: 32px;
+  height: 2px;
+}
+.bell-bottom::before,
+.bell-bottom::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+}
+.bell-bottom::before {
+  left: 1px;
+  border-bottom: 4px solid #fff;
+  border-right: 0 solid transparent;
+  border-left: 4px solid transparent;
+}
+.bell-bottom::after {
+  right: 1px;
+  border-bottom: 4px solid #fff;
+  border-right: 4px solid transparent;
+  border-left: 0 solid transparent;
+}
+.bell-rad {
+  width: 8px;
+  height: 4px;
+  margin-top: 2px;
+  border-radius: 0 0 4px 4px;
+  animation: rad 1s 2s both infinite;
+}
+.notification-count {
+  position: absolute;
+  z-index: 1;
+  top: -6px;
+  right: -6px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 18px;
+  border-radius: 50%;
+  background-color: #ff4927;
+  color: #fff;
+  animation: zoom 3s 3s both infinite;
+}
+@keyframes bell {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(30deg); }
+  20% { transform: rotate(0); }
+  80% { transform: rotate(0); }
+  90% { transform: rotate(-30deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes rad {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(6px); }
+  20% { transform: translateX(0); }
+  80% { transform: translateX(0); }
+  90% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+@keyframes zoom {
+  0% { opacity: 0; transform: scale(0); }
+  10% { opacity: 1; transform: scale(1); }
+  50% { opacity: 1; }
+  51% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes moon-moving {
+  0% {
+    transform: translate(-200%, 600%);
+  }
+  100% {
+    transform: translate(800%, -200%);
+  }
+}
+
+
+  
     </style>
 </head>
 <body>  			
@@ -207,9 +414,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
+    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
 	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
+		  
+		  
 	  </div>
   </div>
 
@@ -225,11 +433,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li><a href="dash1.php" style="color: white;">Appointments</a></li>
-        <li class="active"><a href="#"style="color: white;">Emergency</a></li>
-        <li><a href="prescription.php"style="color: white;">Prescription</a></li>
-        <li><a href="history.php"style="color: white;">Medical History</a></li>
+        <li  ><a href="#" style="color: white;">My Dashboard</a></li>
+        <li><a href="#" style="color: white;">Past Requests</a></li>
+       
+  
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -238,28 +445,52 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
   </div>
 </nav>
-
+      <!--This search div id include The radio button, the notification bell and the 'Show Patient' button-->
 		   <div id="search">
 
 
 		   
-		   <div id="radius" class="form-group">
-                <label>Radius</label>
-				<input type="text" name="search" class="form-control">
-           </div>
-           
-           <div id="sublabel33">
+
+      <!--The radio button  Start Here-->
+      <!--To refer to what have been posted in the radio button use - POST["switch"]-->     
+           <div id="radio">
 
 				 
-           <a href="emergency2.php" style="color: #FDFEFE">Switch ON-OFF</a>
+           <p class="btn-switch">					
+              <input type="radio" id="yes" name="switch" class="btn-switch__radio btn-switch__radio_yes" />
+              <input type="radio" checked id="no" name="switch" class="btn-switch__radio btn-switch__radio_no" />		
+              <label for="yes" class="btn-switch__label btn-switch__label_yes"><span class="btn-switch__txt">ON</span></label>								  <label for="no" class="btn-switch__label btn-switch__label_no"><span class="btn-switch__txt">OFF</span></label>							
+          </p>
+
+           </div>
 
 
-
-            </div>
-
+      <!--The radio button end Here-->
 		   
-	       </div>
 
+		
+		<!--The Notification Bell and 'Show Patient' submit button Start Here-->
+    <!--The if statement that you can add is to echo this notification if the condition is met--> 
+    <div class="notification-box" style="float:right;">
+    <input id="show-listings" type="button" class="btn btn-primary" value="Show Patient">
+    <span class="notification-count">1</span>
+    <div class="notification-bell">
+      <span class="bell-top"></span>
+      <span class="bell-middle"></span>
+      <span class="bell-bottom"></span>
+      <span class="bell-rad"></span>
+    </div>
+    
+    </div>
+    <!--To refer to the 'Show Patient' submit button refer to "getElementById(show-listings)" however you change the id name and remain with a consistent UI-->
+    <!--The Notification Bell and 'Show Patient' End Here-->
+
+
+
+	       </div>
+       <!--The 'search' div which include the notification bell and checkbox  end Here-->
+
+<!--The Map Start Here-->
 		   <div id="map">
 		   <script>
       /*var customLabel = {
@@ -640,29 +871,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
        </div>
 		   
 		   
-		   <div id="back">
 		   
-		   <div id="sublabel31">
-			      Ambulances Around You
-              </div>
-              <div id="label3">
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Availability:<br>
-				 
-			  </div>
-
-		   </div>
-           
-           <div id="label3">
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Availability:<br>
-				 
-              </div>
-
-
-        </div>
-		   
-		   </div>
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>

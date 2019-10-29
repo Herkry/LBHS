@@ -56,7 +56,7 @@ while ($row = $result1->fetch_assoc()){
               $changeDocQueue = "UPDATE doctor SET docQueue = '$docQueue' WHERE docFname = '$docName'";
               setData($changeDocQueue);
 
-              header("Location:dash2.php");
+              //header("Location:dash2.php");
 
               }
     }
@@ -68,35 +68,7 @@ while ($row = $result1->fetch_assoc()){
     }
 
 }
-//$rowDocId = getData($selectDocId);
-//$docId = $rowDocId[0]['docId'];
 
-
-//$hospId = $rowDocId[0]['hospId'];
-
-
-
-
-//Update docQueue by 1//
-//First select docQueue from DB 
-
-
-
-//$rowDocQueue = getData($selectDocQueue);
-//$docQueue = $rowDocQueue[0]['docQueue'];
-
-
-//echo($docQueue);
-
-
- 
-
-
-//Finally Insert into WaitingList relation
-
-
-
-//Redirect to patView Appointment Page------dash1.php
 
 
 ?>

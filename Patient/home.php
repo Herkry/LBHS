@@ -109,8 +109,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 #sublabel33{
      width:250px;
      height:50px;
-     margin: auto;
-     margin-top: 30px;
+     
+
      padding-top:11px;
      text-align: center;
      font-family: "Angsana New", Angsana, serif;
@@ -127,6 +127,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             height:500px;
             width:100%;
 			padding:0px;
+      margin-bottom:20px;
         }
 		#search{
           width:200px;
@@ -134,7 +135,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		  display:inline;
 		  padding-left:0px;
 		  
-		  
+	
 		  
 		  
 		}
@@ -145,6 +146,32 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 			width:200px;
 		
 		}
+
+    .notification {
+  background-color: #0B0B3B;
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  position: relative;
+  display: inline-block;
+
+}
+
+.notification:hover {
+  background: red;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
+
+
 		#radius{
 			float: left;
 			padding-top:10px;
@@ -152,7 +179,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 			margin-right:50px;
 
 		}
-		#buttons{
+		.buttons{
 			float:left;
 			padding-top:30px;
 			width:200px;
@@ -161,11 +188,16 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		footer {
 	  background-color: black;
       padding: 25px;
-	  height: 200px;
+	  height: 70px;
     }
 
 
-
+   #top-cont{
+     border:1px solid;
+     height:75px;
+     margin:5px;
+     padding-left:10px;
+   }
 
 	
     </style>
@@ -176,10 +208,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-	  <div id="sublabel13">
-		  <img src= "profile.png" height="20" width="20" />
-		  <?php echo htmlspecialchars($_SESSION["username"]); ?>
-	  </div>
+    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
+	
+
+	
   </div>
 
 </div>
@@ -195,10 +227,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active" ><a href="#" style="color: white;">Home</a></li>
-        <li><a href="dash1.php" style="color: white;">Appointments</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
-		<li><a href="prescription.php"style="color: white;">Prescription</a></li>
-		<li><a href="history.php"style="color: white;">Medical History</a></li>
+	    	<li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -207,25 +239,41 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
   </div>
 </nav>
+   
+      <div id="top-cont">
 
 		   <div id="search">
 
 		   <div id="specialist" class="form-group">
-                <label>Search Specialist</label>
-				<input type="text" id="zoom-to-area-text" class="form-control">
+        <label>Search Specialist</label>
+		
+
+          
+         <select name="zoom-to-area-text" id="zoom-to-area-text" class="form-control">
+           <?php
+           require('dbConnection.php');
+	         $conn= connect();
+	         $sql= mysqli_query($conn, "SELECT DISTINCT `docSpecialty` FROM doctor");
+	         $row= mysqli_num_rows($sql);
+	  
+	        while($row = mysqli_fetch_array($sql)){
+		      echo "<option value='".$row['docSpecialty']."'>".$row['docSpecialty']."</option>";
+		  
+	        }
+	        echo "</select>";
+           ?>
+         </select> 
+
 				
 		   </div>
 		   
-		   <div id="radius" class="form-group">
-                <label>Radius</label>
-				<input type="text" name="search" class="form-control">
-		   </div>
-		   <div id="buttons">
+
+		   <div class="buttons">
 		   <input id="show-listings" type="button" class="btn btn-primary" value="Show Listings">
 
 		  </div>
 		  
-		  <div id="buttons">
+		  <div class="buttons">
 		
 		   <input id="hide-listings" type="button" class="btn btn-primary" value="Hide Listings">
 
@@ -233,13 +281,18 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		  
 
 		  
-		  <div id="buttons">
+		  <div class="buttons">
 
            <input id="zoom-to-area" class="btn btn-primary" type="button" value="Zoom">
           </div>
+
+          <div class="buttons">
+
+<input id="zoom-to-area" class="btn btn-primary" type="button" style="background-color:#CB4335; border-color:#CB4335;" value="Automatic Scheduling">
+</div>
 		   
 	       </div>
-
+      </div>
 		   <div id="map">
       
 		   <script>
@@ -365,7 +418,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 			        //InfoWindow Content
 
 
-                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = 'saveMapDocInfoPr.php' method = 'post'> <input type = 'hidden'   name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
+                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = '' method = 'post'> <input type = 'hidden'  id='submit' name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
 
                     var infowincontent = document.createElement('div');
                     var strong = document.createElement('strong');
@@ -626,28 +679,89 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		   
 		   <div id="back">
-		   
-		           		   <div id="label3">
-		      <div id="sublabel31">
-			      Doctor Around You:<br>
-			  </div>
-			  <div id="sublabel32">
-			      Name:<br>Distance:<br>Working hours:<br>
-				 
-			  </div>
-			  <div id="sublabel33">
 
-				 
-				     <a href="dash2.php" style="color: #FDFEFE">Automatic Scheduling</a>
-				 
-
-				 
-			  </div>
-		   </div>
 		   
 		   </div>
 
       
+
+
+       <?php
+
+
+
+//Get SQL Functions
+$link = connect();
+
+
+
+// get the docName parameter from Map and patientId from  SESSION VARIABLE, and other DB parameters
+if (isset($_POST['submit'])) {
+$docName = $_POST['submit'];
+
+//$patId = $_POST["patId"];
+
+
+
+
+$patId = $_SESSION["id"];
+$listStatus = "Being Assisted";
+
+
+$selectDocId = "SELECT docId, hospId FROM doctor WHERE docFname = '$docName'";
+
+$result1 = $link->query($selectDocId);
+//$docId = 0;
+//$hospId = 0;
+while ($row = $result1->fetch_assoc()){
+
+    $docId = $row['docId'];
+    $hospId = $row['hospId'];
+
+    // Checker 
+    $checker = mysqli_query($link, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' ");
+    if(mysqli_num_rows($checker)==0){
+        $insertPatWaitingList = "INSERT INTO waitinglist(docId, patId, hospId, listStatus, appointment_date) VALUES('$docId', '$patId', '$hospId' ,'$listStatus', now())";
+        setData($insertPatWaitingList);
+
+        $selectDocQueue = "SELECT docQueue FROM doctor WHERE docFname = '$docName'";
+        $result2 = $link->query($selectDocQueue);
+        //$docQueue = 0;
+        while ($row = $result2->fetch_assoc()){
+              $docQueue = $row['docQueue'];
+
+              $docQueue = trim($docQueue + 1);
+
+              $changeDocQueue = "UPDATE doctor SET docQueue = '$docQueue' WHERE docFname = '$docName'";
+              setData($changeDocQueue);
+
+              //header("Location:dash2.php");
+
+              }
+    }
+    else{
+       
+
+        echo'<script>'.'alert("Impossible action. You have already a pending appointment"); window.location.replace("home.php");'.'</script>';
+
+    }
+
+}
+
+}
+
+?>
+
+
+
+
+
+
+
+
+
+
+
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>
