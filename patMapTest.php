@@ -4,7 +4,7 @@
 $dbserver = "localhost";
 $username = "root";
 $password = "";
-$dbname = "icspro";
+$dbname = "icspro3";
 
 // Start XML file, create parent node
 

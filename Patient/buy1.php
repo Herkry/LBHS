@@ -1,11 +1,148 @@
 <?php
 // Initialize the session
 session_start();
+
+//Require
+require("sqlFunctions.php");
  
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// //SESSION and DB VARS
+// $patId = $_SESSION["id"];
+// $listStatus = "awaiting medication";
+
+
+// //Check whether patient is in an active hospital session at the moment
+// //Select from waiting list relation to check the listStatus
+// $selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus'";
+// $rowWaitlistStatus = getData($selectWaitlistStatus); 
+
+// //Check whether $rowWaitlistStatus is empty
+// if(!empty($rowWaitlistStatus)){
+//   echo("
+//         <script>
+//             window.alert('You have not selected a pharmacy to buy a medicine from');
+//         </script>
+//   ");
+
+//   header("Location: prescription.php");
+// }
+
+// //SESSION and DB VARS
+// $patId = $_SESSION["id"];
+// $listStatus = "awaiting pharmacist";
+
+
+// //Check whether patient is awaiting pharmacist
+// //Select from waiting list relation to check the listStatus
+// $selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus'";
+// $rowWaitlistStatus = getData($selectWaitlistStatus); 
+
+// //Check whether $rowWaitlistStatus IS NOT empty-- meaning patient is only waiting for pharmacist to give them medicine
+// if(empty($rowWaitlistStatus)){
+//   //If this array is empty, then redirect patient to home page
+//   header("Location: home.php");
+// }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Define DB Variables
+$patId = $_SESSION["id"];
+$medRecStatus = "awaiting medication";
+
+//Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
+$selectMedAllocated = "SELECT medName, medDosageAmt, intakeInstructions FROM medicalrecords WHERE patId = '$patId' AND medRecStatus = '$medRecStatus'";
+$rowMedAllocated = getData($selectMedAllocated); 
+
+//print_r($rowMedAllocated);
+
+//Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
+$rowMedAllocatedName = $rowMedAllocated[0]['medName'];
+$rowMedAllocatedDosageAmount = $rowMedAllocated[0]['medDosageAmt'];
+$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocatedName' AND medTotAmt >= '$rowMedAllocatedDosageAmount' ORDER BY medUnitCharge ASC ";
+$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+
+//Check whether $rowMedAllocatedDetails is empty
+if(empty($rowMedAllocatedDetails)){
+
+    echo("
+
+          <script>
+              window.alert('No pharmacy found with the requested medication dosage');
+          </script>
+
+    ");
+
+    //header("Location: home.php");
+    echo("Done");
+}
+
+
+else{
+//Changing status of patient relation
+//Updating waitingList
+//$updatePatStatus = "UPDATE waitingList SET listStatus = 'seen pharmacist' WHERE patId = '$patId' ";
+//setData($updatePatStatus);
+
+//Updating medicalRecords relation
+//$updatePatStatus = "UPDATE medicalrecords SET medRecStatus = 'seen pharmacist' WHERE patId = '$patId' ";
+//setData($updatePatStatus);
+
+
+//Calculate price patient will pay for every pharmacy on list
+//Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+$patPharmTotMedCharge = array();
+
+//Declaring some patient variables here
+$patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+
+for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+    $totMedCharge = $patMedDosageAmt * $rowMedAllocatedDetails[$i]["medUnitCharge"];
+    $patPharmTotMedCharge[$i] =  $totMedCharge;
+}
+
+//Selecting pharm names according to the pharmIds in $rowMedAllocatedDetails array, array will be ordered same as rowMedllocatedDetails array and $patPharmTotMedCharge array as well
+
+//Declaring array to hold pharmacy names
+$pharmNames = array();
+
+for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+    //Selecting from pharmacist relation ONLY ONE record of the pharmId specified
+    $rowMedAllocatedPharmId = $rowMedAllocatedDetails[$i]['pharmId'];
+    $selectPharmDetails = "SELECT * FROM pharmacy WHERE pharmId = '$rowMedAllocatedPharmId' ";
+    $rowPharmDetails = getData($selectPharmDetails);
+    
+    $pharmNames[$i] = $rowPharmDetails[0]["pharmName"];
+    
+
+}
+
+//Finalising on the info selected-Getting details of the pharmacist selected
+$pharmNameSelected = $_POST["pharmName"];
+$medSelectedCost = $_POST["medCost"];
+
+//Select from pharmacist relation where pharmName is as specified-- ONLY ONE record selected
+$selectChosenPharmDetails = "SELECT * FROM pharmacy WHERE pharmName = '$pharmNameSelected' ";
+$rowChosenPharmDetails = getData($selectChosenPharmDetails);
+
+
+//Insert into pharmRequests relation
+//Select medId from medicine relation where pharmId = $rowChosenPharmDetails[0]['pharmId'] and medName = $rowMedAllocated[0]['medname']
+$rowChosenPharmDetailsPharmId = $rowChosenPharmDetails[0]['pharmId'];
+$rowMedAllocatedName = $rowMedAllocated[0]['medName'];
+$selectMedId = "SELECT medId FROM medicine WHERE pharmId = '$rowChosenPharmDetailsPharmId' AND  medName = '$rowMedAllocatedName'";
+$rowMedId = getData($selectMedId);
+
+//Finally Insert
+$rowMedIdOne = $rowMedId[0]['medId']; 
+
+$insertPharmRequest = "INSERT INTO pharmacyrequests(medId, patId, pharmId, timeOfRequest) VALUES('$rowMedIdOne', '$patId', '$rowChosenPharmDetailsPharmId', NOW()) ";
+setData($insertPharmRequest);
 }
 ?>
 
@@ -123,7 +260,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 
 
-
 		footer {
             margin-top:20px;
 	  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
@@ -179,23 +315,36 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		   
 		   
 		   <div id="back">
-		   
-		           		   
+		      		   
 		      <div id="sublabel31">
-			      Medicine Delivery
-              </div>
-              <div id="label3">
-			  <div id="sublabel32">
-			      Location:<br>Picking Time:<br>Delivery Duration:
-				 
-			  </div>
 
-		   </div>
- 
+			       Get your Medicine
+          
+          </div>
+          
+          <div id="label3">
+
+            <div id="sublabel32">
+
+                Medicine Name:<?php echo($rowMedAllocated[0]["medName"]);?><br>
+                Dosage: <?php echo($rowMedAllocated[0]["medDosageAmt"]);?> mg<br>
+                Instructions: <?php echo($rowMedAllocated[0]["intakeInstructions"]);?><br>
+                Cost: Sh<?php echo($medSelectedCost); ?>
+            </div><br><br>
+			    
+            <div id="sublabel32">
+			          Pharmacy Name:  <?php echo($rowChosenPharmDetails[0]["pharmName"]);?>         <br>
+                Address:        <?php echo($rowChosenPharmDetails[0]["pharmAddress"]);?>      <br>
+                Email:          <?php echo($rowChosenPharmDetails[0]["pharmEmail"]);?>        <br>
+                Phone:          <?php echo($rowChosenPharmDetails[0]["mgpharmPhone"]);?>        <br>
+  			    </div>
+
+		      </div>
+
+		   </div><br><br><br><br><br><br>
 
 
 
-		   </div>
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>

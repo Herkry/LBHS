@@ -1,4 +1,8 @@
 <?php
+//Require
+require("sqlFunctions.php");
+
+
 // Initialize the session
 session_start();
  
@@ -7,6 +11,114 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//IN THIS PAGE WE WILL SELECT MEDICINE MEANT FOR PATIENTS AND SUGGEST A PHARMACY MEANT FOR THEM
+
+
+// //SESSION and DB VARS
+// $patId = $_SESSION["id"];
+// $listStatus = "awaiting pharmacist";
+
+
+// //Check whether patient is awaiting pharmacist
+// //Select from waiting list relation to check the listStatus
+// $selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus'";
+// $rowWaitlistStatus = getData($selectWaitlistStatus); 
+
+// //Check whether $rowWaitlistStatus IS NOT empty-- meaning patient is only waiting for pharmacist to give them medicine
+// if(!empty($rowWaitlistStatus)){
+//   header("Location: buy1.php");
+// }
+
+
+// //SESSION and DB VARS
+// $patId = $_SESSION["id"];
+// $listStatus = "awaiting medication";
+
+
+// //Check whether patient is in an active hospital session at the moment
+// //Select from waiting list relation to check the listStatus
+// $selectWaitlistStatus = "SELECT listStatus FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus'";
+// $rowWaitlistStatus = getData($selectWaitlistStatus); 
+
+// //Check whether $rowWaitlistStatus is empty
+// if(empty($rowWaitlistStatus)){
+//   echo("
+//         <script>
+//             window.alert('You have not seen the doctor yet so no prescription is available at the moment');
+//         </script>
+//   ");
+
+//   header("Location: home.php");
+// }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Define DB Variables
+$patId = $_SESSION["id"];
+$medRecStatus = "awaiting medication";
+
+//Selecting From medicalHistory where listStatus = 'awaiting medication'-------Only one medName is selected(of this specific patient)
+$selectMedAllocated = "SELECT medName, medDosageAmt, intakeInstructions FROM medicalrecords WHERE patId = '$patId' AND medRecStatus = '$medRecStatus'";
+$rowMedAllocated = getData($selectMedAllocated); 
+
+//TEST
+//print_r($rowMedAllocated);
+
+
+
+//Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
+$rowMedAllocatedName = $rowMedAllocated[0]['medName'];
+$rowMedAllocatedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+$selectMedAllocatedDetails = "SELECT * FROM medicine WHERE medName = '$rowMedAllocatedName' AND medTotAmt >= '$rowMedAllocatedDosageAmt' ORDER BY medUnitCharge ASC ";
+$rowMedAllocatedDetails = getData($selectMedAllocatedDetails);
+
+//TEST
+//print_r($rowMedAllocatedDetails);
+
+//Check whether $rowMedAllocatedDetails is empty
+if(empty($rowMedAllocatedDetails)){
+    echo("
+          <script>
+              window.alert('No pharmacy found with the requested medication dosage');
+          </script>
+    ");
+
+    header("Location: home.php");
+}
+
+else{
+
+    //Calculate price patient will pay for every pharmacy on list
+    //Declare array patPharmTotMedCharge which is ordered as the rowMedAllocatedDetails which stores the pharmacy details and total charges for patient
+    $patPharmTotMedCharge = array();
+
+    //Declaring some patient variables here
+    $patMedDosageAmt = $rowMedAllocated[0]['medDosageAmt'];
+
+
+    for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+        $totMedCharge = $patMedDosageAmt * $rowMedAllocatedDetails[$i]["medUnitCharge"];
+        $patPharmTotMedCharge[$i] =  $totMedCharge; 
+    }
+
+    //Selecting pharm names according to the pharmIds in $rowMedAllocatedDetails array, array will be ordered same as rowMedllocatedDetails array and $patPharmTotMedCharge array as well
+
+    //Declaring array to hold pharmacy names
+    $pharmNames = array();
+
+    for($i = 0; $i < count($rowMedAllocatedDetails); $i++){
+        //Selecting from pharmacist relation ONLY ONE record of the pharmId specified
+        $rowMedAllocatedPharmId = $rowMedAllocatedDetails[$i]['pharmId'];
+        $selectPharmDetails = "SELECT * FROM pharmacy WHERE pharmId = '$rowMedAllocatedPharmId' ";
+        $rowPharmDetails = getData($selectPharmDetails);
+    
+        $pharmNames[$i] = $rowPharmDetails[0]["pharmName"];
+    
+    }
+}
+
 ?>
 
 
@@ -186,7 +298,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
               </div>
               <div id="label3">
 			  <div id="sublabel32">
-			      Medicine:<br>Manufacturer:<br>Type:
+			      Medicine Name:<?php echo($rowMedAllocated[0]["medName"]);?>
 				 
 			  </div>
 
@@ -194,7 +306,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
            
            <div id="label3">
 			  <div id="sublabel32">
-			      Dosage:<br>Instructions:
+			      Dosage:<?php echo($rowMedAllocated[0]["medDosageAmt"]);?><br>
+            Instructions:<?php echo($rowMedAllocated[0]["intakeInstructions"]);?>
 				 
 			  </div>
 
@@ -203,7 +316,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
            <div id="sublabel33">
 
 				 
-          <a href="buy1.php" style="color: #FDFEFE">Request Pharmacy</a>
+              <a href="buy.php" style="color: #FDFEFE">Request Pharmacy</a>
 
 
 
@@ -211,9 +324,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
             <div id="sublabel33">
 
-				 
-         <a href="buy.php" style="color: #FDFEFE">Select Pharmacy</a>
-
+				  <form action = "buy1.php" method = "POST">
+            <!-- <a href="buy.php" style="color: #FDFEFE">Select Pharmacy</a>-->
+            <input type = "hidden" name = "pharmName" value = "<?php echo($pharmNames[0])?>" >
+            <input type = "hidden" name = "medCost" value = "<?php echo($patPharmTotMedCharge[$i]) ?>">
+            <input type = "submit" name = "AutoSelection" value = "AutoSelection" style="color: #FDFEFE">
+          </form> 
 
 
            </div>
