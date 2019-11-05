@@ -304,8 +304,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                  <select id="mode">
                     <option value="DRIVING">drive</option>
                     <option value="WALKING">walk</option>
-                    <option value="BICYCLING">bike</option>
-                    <option value="TRANSIT">transit ride</option>
+                    <option value ="BICYCLING">bike</option>
+                    <option value ="TRANSIT">transit ride</option>
                 </select>
                 <span class="text">of</span>
                 <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY">
