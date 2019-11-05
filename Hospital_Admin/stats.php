@@ -11,6 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <!DOCTYPE html>
 <html>
+<head>
 <title>Admin Dashboard</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +24,15 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+    <?php 
+
+     require_once "dbConnection.php";
+     $link = connect();
+     $hospId = $_SESSION["id"];
+     $query = "SELECT docLname, docQueue FROM `doctor` WHERE hospId = '$hospId'";
+     $result = $link->query($query);
+   echo("
+    <script type='text/javascript'>
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
@@ -31,15 +40,21 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
         var data = google.visualization.arrayToDataTable([
           ['Task', 'Patient per Day'],
-          ['Doctor1',     11],
-          ['Doctor2',      2],
-          ['Doctor3',  2],
-          ['Doctor4', 2],
-          ['Doctor5',    7]
+          ");
+          
+          while ($row = $result->fetch_assoc()){
+            $DOC = $row['docLname'];
+            $Q = $row['docQueue'];
+            echo("
+          ['$DOC',    $Q]
+          
+          ");
+          }
+          echo("
         ]);
 
         var options = {
-          title: 'Doctor Productivity'
+          title: 'Nurse Productivity'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
@@ -47,34 +62,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         chart.draw(data, options);
       }
     </script>
-
-
-<script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Task', 'Patient per Day'],
-          ['Nurse1',     11],
-          ['Nurse2',      2],
-          ['Nurse3',  2],
-          ['Nurse4', 2],
-          ['Nurse5',    7]
-        ]);
-
-        var options = {
-          title: 'Nurse Productivity'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
-
-        chart.draw(data, options);
-      }
-    </script>
-
+    ");
+   ?>
 <style>
+
 <body class="w3-light-grey">
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         #constant{
@@ -96,6 +87,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
           #piechart2{ margin-right:10px; }
           }
 	</style>
+  </head>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
@@ -175,7 +167,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
 
 
-<div id="piechart1" style="width: 550px; height: 300px; float:left; border:1px solid;margin-left:20px;"></div>
+<?php echo("<div id='piechart1' style='width: 550px; height: 300px; float:left; border:1px solid;margin-left:20px;'></div>"); ?>
 
 </div>
 <p style="margin-left:20px;">Nurse Productivity</p>
