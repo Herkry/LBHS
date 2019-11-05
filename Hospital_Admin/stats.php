@@ -36,31 +36,33 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
 
-        var data = google.visualization.arrayToDataTable([
-          ['Task', 'Patient per Day'],
           ");
           
           while ($row = $result->fetch_assoc()){
             $DOC = $row['docLname'];
             $Q = $row['docQueue'];
             echo("
+            function drawChart() {
+
+              var data = google.visualization.arrayToDataTable([
+                ['Task', 'Patient per Day'],
           ['$DOC',    $Q]
+          ]);
+
+          var options = {
+            title: 'Doctors Productivity'
+          };
+  
+          var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+  
+          chart.draw(data, options);
+        }
           
           ");
           }
           echo("
-        ]);
 
-        var options = {
-          title: 'Nurse Productivity'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
-
-        chart.draw(data, options);
-      }
     </script>
     ");
    ?>

@@ -7,6 +7,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+require('dbConnection.php');
 ?>
 
 
@@ -130,7 +132,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
       margin-bottom:20px;
         }
 		#search{
-          width:200px;
+          width:400px;
         
 		  display:inline;
 		  padding-left:0px;
@@ -141,7 +143,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		}
 		#specialist{
 			float: left;
-			margin-right:50px;
+			margin-right:10px;
 			padding-top:10px;
 			width:200px;
 		
@@ -182,7 +184,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		.buttons{
 			float:left;
 			padding-top:30px;
-			width:200px;
+			width:120px;
 		}
 
 		footer {
@@ -227,7 +229,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active" ><a href="#" style="color: white;">Home</a></li>
-        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge"><?php $linker = connect(); $patId = $_SESSION["id"]; $listStatus = "Being Assisted"; $checker = mysqli_query($linker, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' "); $checks = mysqli_num_rows($checker);  echo($checks)?></span></a></li>
         <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
 	    	<li><a href="history.php"style="color: white;">Medical History</a></li>
@@ -251,7 +253,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
           
          <select name="zoom-to-area-text" id="zoom-to-area-text" class="form-control">
            <?php
-           require('dbConnection.php');
+           
 	         $conn= connect();
 	         $sql= mysqli_query($conn, "SELECT DISTINCT `docSpecialty` FROM doctor");
 	         $row= mysqli_num_rows($sql);
@@ -287,13 +289,63 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
           </div>
 
           <div class="buttons">
+          <input id="toggle-drawing"  class="btn btn-primary"   type="button" value="Drawing Tools">
+          </div>
 
-<input id="zoom-to-area" class="btn btn-primary" type="button" style="background-color:#CB4335; border-color:#CB4335;" value="Automatic Scheduling">
+
+
+          <div class="buttons" class="form-group" style="margin-right:10px;	padding-top:14px;">
+                <span class="text"> within </span>
+                <select id="max-duration" class="form-control">
+                    <option value="10">10 min</option>
+                    <option value="15">15 min</option>
+                    <option value="30">30 min</option>
+                    <option value="60">1 hour</option>
+                    <option value="300">5 hours</option>
+                    <option value="60000">10 hours </option>
+                </select>
+                </div>
+                <div class="buttons" class="form-group" style="margin-right:10px;">
+                 <select id="mode" class="form-control">
+                    <option value="DRIVING">drive</option>
+                    <option value="WALKING">walk</option>
+                    <option value ="BICYCLING">bike</option>
+                    <option value ="TRANSIT">transit ride</option>
+                </select>
+
+
+                </div>
+
+                <div class="buttons">
+
+                <input id="search-within-time" type="button"  style="background-color:#04B4AE; border-color:#04B4AE;" class="btn btn-primary"   value="Go">
+
+<!-- <span class="text"> Draw a shape to search within it for homes!</span> -->
+
 </div>
+
+
+
+            
+            <div class="buttons">
+                <input id="zoom-to-area" class="btn btn-primary" type="button" style="background-color:#CB4335; border-color:#CB4335;" value="Automatic Scheduling">
+            </div><br>
+
+            
+
+                <!-- <span class="text">of</span> -->
+                <!-- <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY"> -->
+
+
+
 		   
-	       </div>
-      </div>
-		   <div id="map">
+        </div>
+        
+
+    </div>
+           
+        
+        <div id="map">
       
 		   <script>
       /*var customLabel = {
@@ -308,14 +360,22 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 		//Creating map
 		//var map;
 		
-		//Create a new blank array for all the listing markers and also create marker and position of user variables, also creating map variable here
+		//Create a new blank array for all the listing markers and also create marker and position of user variables, also creating map variable here, also create contentAll(InfoWindow info variable) variable here
         var markersAll = [];
         var markerUser;
         var pos;
         var map;
+        var contentAll;
+        var arrayContentAlls = [];
+        var arrayQueues = []
+
+     // This global polygon variable is to ensure only ONE polygon is rendered.
+     var polygon = null;
 		
 		//Create a new blank array for all the locations and their details.
 		var locationsAll = [];
+
+        
 		
     function initMap() {
 			map = new google.maps.Map(document.getElementById('map'), {
@@ -347,9 +407,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
           //infoWindowUser.setContent('Location found.');
           //infoWindowUser.open(map);
           map.setCenter(pos);
-        
+          
+
 			    markerUser.addListener('click', function() {
 			      if (infoWindow.marker != marker) {
+                   
                     infoWindowUser.setContent(markerUser.title);
                     infoWindow.open(map, marker);
 				
@@ -379,13 +441,17 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         }	
 
 
+
+
 			
 		//Incremental Here to track no. of entries/markers
-        var i = 0;
+        var p = -1;
+        //window.alert("Harry");
         
 		
 		//Change this depending on the name of your PHP or XML file
         downloadUrl('/LBHS/hospital_maps.xml', function(data) {
+            //window.alert("Harry");
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
             Array.prototype.forEach.call(markers, function(markerElem) {
@@ -416,9 +482,31 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 				  
 
 			        //InfoWindow Content
+              
+                  
+
+                  // Initialize the drawing manager.
+                    var drawingManager = new google.maps.drawing.DrawingManager({
+                        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                        drawingControl: true,
+                        drawingControlOptions: {
+                            position: google.maps.ControlPosition.TOP_LEFT,
+                            drawingModes: [
+                              google.maps.drawing.OverlayType.POLYGON
+                           ]
+                       }
+                    });
 
 
-                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = '' method = 'post'> <input type = 'hidden'  id='submit' name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
+
+
+
+                    contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = '' method = 'post'> <input type = 'hidden'  id='submit' name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
+                    p = p + 1;
+                    arrayContentAlls[p] = contentAll;
+                    arrayQueues;
+                    //window.alert(arrayContentAlls[x]);
+                    
 
                     var infowincontent = document.createElement('div');
                     var strong = document.createElement('strong');
@@ -445,36 +533,93 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         map: map,
                         position: point,
                         title: docSpecialty
-                        //label: icon.label
+                        //label: contentAll
                     });
 
                     //Calling showlistings and hidelistings functions
                     document.getElementById('show-listings').addEventListener('click', showListings);
                     document.getElementById('hide-listings').addEventListener('click', hideListings);
-                   
+                    
+                    ////Add listener for search-within- time button////
+                    document.getElementById('search-within-time').addEventListener('click', searchWithinTime);
+                    
+                    document.getElementById('toggle-drawing').addEventListener('click', function() {
+                    toggleDrawing(drawingManager);
+                    });
+
 
                     // Push the marker to our array of markers.
                     markersAll.push(marker);
 
-              
-              
-              marker.addListener('click', function() {
-			        if (infoWindow.marker != marker) {
-                        infoWindow.setContent(contentAll);
-                        infoWindow.open(map, marker);
-				
-				      // Make sure the marker property is cleared if the infowindow is closed.
-				      infoWindow.addListener('closeclick', function() {
-				       infoWindow.marker = null;
-				      });
-			        }
-              });
-              
-			
-			
-			        
-                    marker.setMap(map);
 
+
+
+                    
+
+              //window.alert(p);
+              //window.alert(arrayContentAlls[p]);
+              // marker.addListener('click', function() {
+			        // if (infoWindow.marker != marker) {
+              //           //var now =  arrayContentAlls[p];
+                        
+              //           infoWindow.setContent(arrayContentAlls[p]);
+              //           infoWindow.open(map, marker);
+				
+				      // // Make sure the marker property is cleared if the infowindow is closed.
+				      // infoWindow.addListener('closeclick', function() {
+				      //  infoWindow.marker = null;
+				      // });
+			        // }
+              // });
+
+
+
+              
+              // marker.addListener('click', function() {
+
+              //   for(var f = 0; f < markersAll.length; f++){
+              //     window.alert(arrayContentAlls[f]);
+			        //     if (infoWindow.marker != marker) {
+                        
+              //           infoWindow.setContent(arrayContentAlls[f]);
+              //           infoWindow.open(map, marker);
+				
+				      //           // Make sure the marker property is cleared if the infowindow is closed.
+				      //           infoWindow.addListener('closeclick', function() {
+				      //           infoWindow.marker= null;
+				      //           });
+			        //     }
+              //    // window.alert(arrayContentAlls[f]);
+              //   }
+
+              // });
+             
+              
+			
+			
+                    // Add an event listener so that the polygon is captured,  call the
+                    // searchWithinPolygon function. This will show the markers in the polygon,
+                    // and hide any outside of it.
+                    marker.setMap(map);
+                    drawingManager.addListener('overlaycomplete', function(event) {
+                        // First, check if there is an existing polygon.
+                        // If there is, get rid of it and remove the markers
+                        if (polygon) {
+                          polygon.setMap(null);
+                          hideListings(markersAll);
+                        }
+                        // Switching the drawing mode to the HAND (i.e., no longer drawing).
+                        drawingManager.setDrawingMode(null);
+                        // Creating a new editable polygon from the overlay.
+                        polygon = event.overlay;
+                        polygon.setEditable(true);
+                        // Searching within the polygon.
+                        searchWithinPolygon(polygon);
+                        // Make sure the search is re-done if the poly is changed.
+                        polygon.getPath().addListener('set_at', searchWithinPolygon);
+                          polygon.getPath().addListener('insert_at', searchWithinPolygon);
+                     });
+                    
             }); //foreach loop
           }); //downloadUrl function
         } //initMap
@@ -482,6 +627,70 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         //Distance Function
         //searchWithinTime();
         
+
+//Function for downloadurl----------------------------------------------------------------------------------------------------------
+function downloadUrl(url, callback) {  
+    var request = window.ActiveXObject ? 
+        new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest;   
+    request.onreadystatechange = function() {    
+        if (request.readyState == 4) {            
+            callback(request);    
+        } 
+    };   
+    request.open('GET', url, true);  
+    request.send(null); 
+}
+
+//Function for downloadurl----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+//Function for toggleDrawing----------------------------------------------------------------------------------------------------------
+function toggleDrawing(drawingManager) {
+        if (drawingManager.map) {
+          drawingManager.setMap(null);
+          // In case the user drew anything, get rid of the polygon
+          if (polygon !== null) {
+            polygon.setMap(null);
+          }
+        } else {
+          drawingManager.setMap(map);
+        }
+}
+
+
+//Function for toggleDrawing----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//Function for searchWithinPolygon----------------------------------------------------------------------------------------------------------
+// This function hides all markers outside the polygon,
+      // and shows only the ones within it. This is so that the
+      // user can specify an exact area of search.
+      function searchWithinPolygon() {
+        for (var i = 0; i < markersAll.length; i++) {
+          if (google.maps.geometry.poly.containsLocation(markersAll[i].position, polygon)) {
+            
+            var specialty = document.getElementById('zoom-to-area-text').value;
+            if(specialty == markersAll[i].title){
+                markersAll[i].setMap(map);
+            }
+            
+          } else {
+            markersAll[i].setMap(null);
+          }
+        }
+      }
+
+//Function for searchWithinPolygon----------------------------------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -507,147 +716,313 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             markersAll[i].setMap(null);
         }
       }
+//Showing and Hiding Listings----------------------------------------------------------------------------------------------------------
 
 
-//Finding Distances-------------------------------------------------------------------------------------------------------------------
+//Search Within Time function----------------------------------------------------------------------------------------------------------
 
-        var destination = pos; //User Location
-        var origins = [];
+function searchWithinTime() {
+        // Initialize the distance matrix service.
+        var distanceMatrixService = new google.maps.DistanceMatrixService;
+        
+        /////Set address to user position coordinates/////
+        var address = pos;
+
+        ////Make if stmt Code below useless////
+        // Check to make sure the place entered isn't blank.
+        if ((2+2) == (5)) {
+          window.alert('You must enter an address.');
+        } else {
+          hideListings();
+          showListings();
+          // Use the distance matrix service to calculate the duration of the
+          // routes between all our markers, and the destination address entered
+          // by the user. Then put all the origins into an origin matrix.
+          var origins = [];
+
+          ////Changed markers to markersAll////
           for (var i = 0; i < markersAll.length; i++) {
             origins[i] = markersAll[i].position;
-            markersAll[i].title = "Harry";
-            markerUser.title = "Harry";
           }
-          var service = new google.maps.DistanceMatrixService();
-          service.getDistanceMatrix(
-            {
-                origins: origins,
-                destinations: [destination],
-                travelMode: 'DRIVING',
-                transitOptions: TransitOptions,
-                drivingOptions: DrivingOptions,
-                unitSystem: UnitSystem,
-                avoidHighways: Boolean,
-                avoidTolls: Boolean,
-            }, callback);
-
-            function callback(response, status ) {
-                if (status == 'OK') {
-                    var origins = response.originAddresses;
-                    var destinations = response.destinationAddresses;
-
-                    for (var i = 0; i < origins.length; i++) {
-                        var results = response.rows[i].elements;
-                        for (var j = 0; j < results.length; j++) {
-                            var element = results[j];
-                            var distanceText = element.distance.text;
-                            var durationText = element.duration.text;
-                            var from = origins[i];
-                            var to = destinations[j];
-
-                            //the origin [i] should = the markers[i]
-                            markersAll[i].setMap(map);
-                            var infowindow = new google.maps.InfoWindow({
-                                content: durationText + ' away, ' + distanceText +
-                                        '<div><input type=\"button\" value=\"View Route\" onclick =' +
-                                        '\"displayDirections(&quot;' + origins[i] + '&quot;);\"></input></div>'
-                            });
-                            infowindow.open(map, markersAll[i]);
-                            // Put this in so that this small window closes if the user clicks
-                            // the marker, when the big infowindow opens
-                            markersAll[i].infowindow = infowindow;
-                            
-                            google.maps.event.addListener(markersAll[i], 'click', function() {
-                            this.infowindow.close();
-                            });
-
-                        }
-                    }
-                }
+          var destination = pos;
+          var mode = document.getElementById('mode').value;
+          // Now that both the origins and destination are defined, get all the
+          // info for the distances between them.
+          distanceMatrixService.getDistanceMatrix({
+            origins: origins,
+            destinations: [destination],
+            travelMode: google.maps.TravelMode[mode],
+            unitSystem: google.maps.UnitSystem.IMPERIAL,
+          }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              window.alert('Error was: ' + status);
+            } else {
+              displayMarkersWithinTime(response);
             }
+          });
+        }
+      }
+
+//Search Within Time function----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+//Finding Distances-------------------------------------------------------------------------------------------------------------------
+// This function will go through each of the results, and,
+// if the distance is LESS than the value in the picker, show it on the map.
+
+      function displayMarkersWithinTime(response) {
+        var maxDuration = document.getElementById('max-duration').value;
+        var origins = response.originAddresses;
+        var destinations = response.destinationAddresses;
+        // Parse through the results, and get the distance and duration of each.
+        // Because there might be  multiple origins and destinations we have a nested loop
+        // Then, make sure at least 1 result was found.
+        var atLeastOne = false;
+        for (var i = 0; i < origins.length; i++) {
+          var results = response.rows[i].elements;
+          for (var j = 0; j < results.length; j++) {
+            var element = results[j];
+            if (element.status === "OK") {
+              // The distance is returned in feet, but the TEXT is in miles. If we wanted to switch
+              // the function to show markers within a user-entered DISTANCE, we would need the
+              // value for distance, but for now we only need the text.
+              var distanceText = element.distance.text;
+              // Duration value is given in seconds so we make it MINUTES. We need both the value
+              // and the text.
+              var duration = element.duration.value / 60;
+              var durationText = element.duration.text;
+
+              
+
+              if (duration <= maxDuration) {
+
+                ////Change markers to markersAll////
+                //the origin [i] should = the markers[i]
+                
+                var specialty = document.getElementById('zoom-to-area-text').value;
+              if(specialty == markersAll[i].title){
+                  markersAll[i].setMap(map);
+              }
+              
+                // markersAll[i].setMap(map);
+                atLeastOne = true;
+
+                ////Added contentAll to InfoWindow////
+                // Create a mini infowindow to open immediately and contain the
+                // distance and duration
+                var infowindow = new google.maps.InfoWindow({
+                  content: arrayContentAlls[i] + durationText + ' away, ' + distanceText +
+                    '<div><input    class="btn btn-primary"   style="background-color:#CB4335;border-color:#CB4335;"     type=\"button\" value=\"View Route\" onclick =' +
+                    '\"displayDirections(&quot;' + origins[i] + '&quot;);\"></input></div>'
+                });
+
+                ////Change markers to markersAll////
+
+                var specialty = document.getElementById('zoom-to-area-text').value;
+                if(specialty == markersAll[i].title){
+                  window.alert("Done");
+                  infowindow.open(map, markersAll[i]);
+                  // Put this in so that this small window closes if the user clicks
+                  // the marker, when the big infowindow opens
+                  markersAll[i].infowindow = infowindow;
+                  google.maps.event.addListener(markersAll[i], 'click', function() {
+                  this.infowindow.close();
+                });
+
+               }
+
+
+
+
+              }
+            }
+          }
+        }
+        if (!atLeastOne) {
+          window.alert('We could not find any locations within that distance!');
+        }
+      }
+
 //Finding Distances-------------------------------------------------------------------------------------------------------------------
 
 
-//Finding Directions-------------------------------------------------------------------------------------------------------------------
-            function displayDirections(origin) {
-                var directionsService = new google.maps.DirectionsService;
-                // Get the destination address from the user entered value.
-                var destinationAddress = destination;
-                directionsService.route({
-                    // The origin is the passed in marker's position.
-                    origin: origin,
-                    // The destination is user entered address.
-                    destination: destinationAddress,
+
+
+
+
+
+//Finding Routes-------------------------------------------------------------------------------------------------------------------
+function displayDirections(origin) {
+        hideListings();
+        showListings();
+        var directionsService = new google.maps.DirectionsService;
+
+        ////Changed destination address to user location////
+        // Get the destination address from the user entered value.
+        var destinationAddress = pos;
+        // Get mode again from the user entered value.
+        var mode = document.getElementById('mode').value;
+        directionsService.route({
+          // The origin is the passed in marker's position.
+          origin: origin,
+          // The destination is user entered address.
+          destination: destinationAddress,
+          travelMode: google.maps.TravelMode[mode]
+        }, function(response, status) {
+          if (status === google.maps.DirectionsStatus.OK) {
+            var directionsDisplay = new google.maps.DirectionsRenderer({
+              map: map,
+              directions: response,
+              draggable: true,
+              polylineOptions: {
+                strokeColor: 'green'
+              }
+            });
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+  }
+
+//Finding Routes-------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// //Finding Distances-------------------------------------------------------------------------------------------------------------------
+
+//         var destination = pos; //User Location
+//         var origins = [];
+//           for (var i = 0; i < markersAll.length; i++) {
+//             origins[i] = markersAll[i].position;
+//             markersAll[i].title = "Harry";
+//             markerUser.title = "Harry";
+//           }
+
           
-                }, function(response, status) {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                            var directionsDisplay = new google.maps.DirectionsRenderer({
-                                map: map,
-                                directions: response,
-                                draggable: true,
-                                polylineOptions: {
-                                strokeColor: 'green'
-                            }
-                        });
-                        } else {
-                            window.alert('Directions request failed due to ' + status);
-                        }
-                });
-            }
+
+
+//           var service = new google.maps.DistanceMatrixService();
+//           service.getDistanceMatrix(
+//             {
+//                 origins: origins,
+//                 destinations: [destination],
+//                 travelMode: 'DRIVING',
+//                 transitOptions: TransitOptions,
+//                 drivingOptions: DrivingOptions,
+//                 unitSystem: UnitSystem,
+//                 avoidHighways: Boolean,
+//                 avoidTolls: Boolean,
+//             }, callback);
+
+//             function callback(response, status ) {
+//                 if (status == 'OK') {
+//                     var origins = response.originAddresses;
+//                     var destinations = response.destinationAddresses;
+
+//                     for (var i = 0; i < origins.length; i++) {
+//                         var results = response.rows[i].elements;
+//                         for (var j = 0; j < results.length; j++) {
+//                             var element = results[j];
+//                             var distanceText = element.distance.text;
+//                             var durationText = element.duration.text;
+//                             var from = origins[i];
+//                             var to = destinations[j];
+
+//                             //the origin [i] should = the markers[i]
+//                             markersAll[i].setMap(map);
+//                             var infowindow = new google.maps.InfoWindow({
+//                                 content: durationText + ' away, ' + distanceText +
+//                                         '<div><input type=\"button\" value=\"View Route\" onclick =' +
+//                                         '\"displayDirections(&quot;' + origins[i] + '&quot;);\"></input></div>'
+//                             });
+//                             infowindow.open(map, markersAll[i]);
+//                             // Put this in so that this small window closes if the user clicks
+//                             // the marker, when the big infowindow opens
+//                             markersAll[i].infowindow = infowindow;
+                            
+//                             google.maps.event.addListener(markersAll[i], 'click', function() {
+//                             this.infowindow.close();
+//                             });
+
+//                         }
+//                     }
+//                 }
+//             }
+// //Finding Distances-------------------------------------------------------------------------------------------------------------------
+
+
+// //Finding Directions-------------------------------------------------------------------------------------------------------------------
+//             function displayDirections(origin) {
+//                 var directionsService = new google.maps.DirectionsService;
+//                 // Get the destination address from the user entered value.
+//                 var destinationAddress = destination;
+//                 directionsService.route({
+//                     // The origin is the passed in marker's position.
+//                     origin: origin,
+//                     // The destination is user entered address.
+//                     destination: destinationAddress,
+          
+//                 }, function(response, status) {
+//                         if (status === google.maps.DirectionsStatus.OK) {
+//                             var directionsDisplay = new google.maps.DirectionsRenderer({
+//                                 map: map,
+//                                 directions: response,
+//                                 draggable: true,
+//                                 polylineOptions: {
+//                                 strokeColor: 'green'
+//                             }
+//                         });
+//                         } else {
+//                             window.alert('Directions request failed due to ' + status);
+//                         }
+//                 });
+//             }
                 
    
         
-//Finding Directions----------------------------------------------
+// //Finding Directions----------------------------------------------
 
 
 
+      // function downloadUrl(url, callback) {
+      //   var request = window.ActiveXObject ?
+      //       new ActiveXObject('Microsoft.XMLHTTP') :
+      //       new XMLHttpRequest;
 
+      //   request.onreadystatechange = function() {
+      //     if (request.readyState == 4) {
+      //       request.onreadystatechange = doNothing;
+      //       callback(request, request.status);
+      //     }
+      //   };
 
-
-
-
-
-
-
-			
-
-
-      function downloadUrl(url, callback) {
-        var request = window.ActiveXObject ?
-            new ActiveXObject('Microsoft.XMLHTTP') :
-            new XMLHttpRequest;
-
-        request.onreadystatechange = function() {
-          if (request.readyState == 4) {
-            request.onreadystatechange = doNothing;
-            callback(request, request.status);
-          }
-        };
-
-        request.open('GET', url, true);
-        request.send(null);
-      }
+      //   request.open('GET', url, true);
+      //   request.send(null);
+      // }
       
       
-
-
-    //Inserting Data into DB-----------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-    //Inserting Data into DB----------------------------------------------------------------------------------------------------------------------------------------
-	  var msg = 56;
-      window.location.href = "http://localhost/ICSProject/map_process.php?msg=" + msg;
+    
+    // var msg = 56;
+    //   window.location.href = "http://localhost/ICSProject/map_process.php?msg=" + msg;
       
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
 	  
 	  
 	  
@@ -686,10 +1061,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
       
 
 
-       <?php
-
-
-
+<?php
 //Get SQL Functions
 $link = connect();
 
@@ -735,14 +1107,14 @@ while ($row = $result1->fetch_assoc()){
               $changeDocQueue = "UPDATE doctor SET docQueue = '$docQueue' WHERE docFname = '$docName'";
               setData($changeDocQueue);
 
-              //header("Location:dash2.php");
+              echo("<script> window.location.replace('dash2.php'); </script>");
 
               }
     }
     else{
        
 
-        echo'<script>'.'alert("Impossible action. You have already a pending appointment"); window.location.replace("home.php");'.'</script>';
+        echo'<script>'.'window.alert("Impossible action. You have already a pending appointment"); window.location.replace("home.php");'.'</script>';
 
     }
 
@@ -768,3 +1140,5 @@ while ($row = $result1->fetch_assoc()){
        
 </body>
 </html>
+
+

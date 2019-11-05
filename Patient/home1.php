@@ -7,14 +7,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-require("sqlFunctions.php");
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Emergency</title>
+  <title>Dashboard</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -89,6 +88,7 @@ require("sqlFunctions.php");
 	    padding:30px;
 	
 	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+		border-radius: 25px;
       }
    #sublabel32{
      width:600px;
@@ -103,64 +103,23 @@ require("sqlFunctions.php");
      padding:30px;
      color:white;
      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+	 border-radius: 25px;
      }
 
-
-
-#label3{
-      height:200px;
-
-    
-	  margin-top:20px;
-  
-      }
-  
-   #sublabel31{
-	    width:600px;
-	    height:70px;
-    
-	    margin:auto;
-        padding-top:15px;
-	    font-size:30px;
-	    font-family: "Angsana New", Angsana, serif;
-	    color: white;
-	    text-align:center;
-	
-	    border-radius: 25px;
-	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-      }
-   #sublabel32{
-     width:600px;
-	   height:150px;
-       margin-top:20px;
-       margin-bottom:20px;
-     margin:auto;
-
-     font-family:"Angsana New", Angsana, serif;
-     font-size:22px;
-     text-align: left;
-    
-     padding:30px;
-     color:white;
-     background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-     border-radius: 25px;
-     }
-
-     #sublabel33{
+#sublabel33{
      width:250px;
      height:50px;
      
-     margin: 10px;
-    
+
      padding-top:11px;
      text-align: center;
      font-family: "Angsana New", Angsana, serif;
      font-size:20px;
      border-radius: 25px;
      background-color: #CB4335;
+	 border-radius: 25px;
     
 }
-
 
 
 
@@ -168,7 +127,7 @@ require("sqlFunctions.php");
             height:500px;
             width:100%;
 			padding:0px;
-            margin-bottom:20px;
+      margin-bottom:20px;
         }
 		#search{
           width:200px;
@@ -176,11 +135,17 @@ require("sqlFunctions.php");
 		  display:inline;
 		  padding-left:0px;
 		  
-		  
+	
 		  
 		  
 		}
-
+		#specialist{
+			float: left;
+			margin-right:50px;
+			padding-top:10px;
+			width:200px;
+		
+		}
 
     .notification {
   background-color: #0B0B3B;
@@ -211,18 +176,28 @@ require("sqlFunctions.php");
 			float: left;
 			padding-top:10px;
 			width:200px;
-		    
+			margin-right:50px;
 
 		}
+		.buttons{
+			float:left;
+			padding-top:30px;
+			width:200px;
+		}
 
-
-	
 		footer {
 	  background-color: black;
       padding: 25px;
 	  height: 70px;
     }
 
+
+   #top-cont{
+     border:1px solid;
+     height:75px;
+     margin:5px;
+     padding-left:10px;
+   }
 
 	
     </style>
@@ -234,6 +209,9 @@ require("sqlFunctions.php");
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
     <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
+	
+
+	
   </div>
 
 </div>
@@ -248,12 +226,11 @@ require("sqlFunctions.php");
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge"><?php $linker = connect(); $patId = $_SESSION["id"]; $listStatus = "Being Assisted"; $checker = mysqli_query($linker, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' "); $checks = mysqli_num_rows($checker);  echo($checks)?></span></a></li>
+        <li class="active" ><a href="#" style="color: white;">Home</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
         <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
-        <li class="active"><a href="#"style="color: white;">Emergency</a></li>
-      
-        <li><a href="history.php"style="color: white;">Medical History</a></li>
+        <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
+	    	<li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -262,26 +239,62 @@ require("sqlFunctions.php");
     </div>
   </div>
 </nav>
+   
+      <div id="top-cont">
 
 		   <div id="search">
 
+		   <div id="specialist" class="form-group">
+        <label>Search Specialist</label>
+		
 
+          
+         <select name="zoom-to-area-text" id="zoom-to-area-text" class="form-control">
+           <?php
+           require('dbConnection.php');
+	         $conn= connect();
+	         $sql= mysqli_query($conn, "SELECT DISTINCT `docSpecialty` FROM doctor");
+	         $row= mysqli_num_rows($sql);
+	  
+	        while($row = mysqli_fetch_array($sql)){
+		      echo "<option value='".$row['docSpecialty']."'>".$row['docSpecialty']."</option>";
+		  
+	        }
+	        echo "</select>";
+           ?>
+         </select> 
+
+				
+		   </div>
 		   
-	
-           
-           <div id="sublabel33">
 
-				 
-           <a href="emergency2.php" style="color: #FDFEFE">Request Ambulance</a>
+		   <div class="buttons">
+		   <input id="show-listings" type="button" class="btn btn-primary" value="Show Listings">
 
+		  </div>
+		  
+		  <div class="buttons">
+		
+		   <input id="hide-listings" type="button" class="btn btn-primary" value="Hide Listings">
 
+		  </div>
+		  
 
-            </div>
+		  
+		  <div class="buttons">
 
+           <input id="zoom-to-area" class="btn btn-primary" type="button" value="Zoom">
+          </div>
+
+          <div class="buttons">
+
+<input id="zoom-to-area" class="btn btn-primary" type="button" style="background-color:#CB4335; border-color:#CB4335;" value="Automatic Scheduling">
+</div>
 		   
 	       </div>
-
+      </div>
 		   <div id="map">
+      
 		   <script>
       /*var customLabel = {
         restaurant: {
@@ -372,7 +385,7 @@ require("sqlFunctions.php");
         
 		
 		//Change this depending on the name of your PHP or XML file
-        downloadUrl('MyXmlFile4.xml', function(data) {
+        downloadUrl('/LBHS/hospital_maps.xml', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
             Array.prototype.forEach.call(markers, function(markerElem) {
@@ -403,6 +416,10 @@ require("sqlFunctions.php");
 				  
 
 			        //InfoWindow Content
+
+
+                    var contentAll = "<b>Dr. "+docFname+"</b><br>"+docSpecialty+"<br>"+docPhone+"<br>"+hospName+"<br><br><form action = '' method = 'post'> <input type = 'hidden'  id='submit' name = 'submit'  value = '"+docFname+"'/>  <input type = 'submit'  value = 'See Dr."+docFname+"' class='btn btn-primary'  /></form>";
+
                     var infowincontent = document.createElement('div');
                     var strong = document.createElement('strong');
                     strong.textContent = "Dr. "+docFname;
@@ -443,7 +460,7 @@ require("sqlFunctions.php");
               
               marker.addListener('click', function() {
 			        if (infoWindow.marker != marker) {
-                        infoWindow.setContent(infowincontent);
+                        infoWindow.setContent(contentAll);
                         infoWindow.open(map, marker);
 				
 				      // Make sure the marker property is cleared if the infowindow is closed.
@@ -660,9 +677,94 @@ require("sqlFunctions.php");
     </script>
        </div>
 		   
+		   
+		   <div id="back">
+
+		   
+		   </div>
+
+      
+
+
+       <?php
+
+
+
+//Get SQL Functions
+$link = connect();
+
+
+
+// get the docName parameter from Map and patientId from  SESSION VARIABLE, and other DB parameters
+if (isset($_POST['submit'])) {
+$docName = $_POST['submit'];
+
+//$patId = $_POST["patId"];
+
+
+
+
+$patId = $_SESSION["id"];
+$listStatus = "Being Assisted";
+
+
+$selectDocId = "SELECT docId, hospId FROM doctor WHERE docFname = '$docName'";
+
+$result1 = $link->query($selectDocId);
+//$docId = 0;
+//$hospId = 0;
+while ($row = $result1->fetch_assoc()){
+
+    $docId = $row['docId'];
+    $hospId = $row['hospId'];
+
+    // Checker 
+    $checker = mysqli_query($link, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' ");
+    if(mysqli_num_rows($checker)==0){
+        $insertPatWaitingList = "INSERT INTO waitinglist(docId, patId, hospId, listStatus, appointment_date) VALUES('$docId', '$patId', '$hospId' ,'$listStatus', now())";
+        setData($insertPatWaitingList);
+
+        $selectDocQueue = "SELECT docQueue FROM doctor WHERE docFname = '$docName'";
+        $result2 = $link->query($selectDocQueue);
+        //$docQueue = 0;
+        while ($row = $result2->fetch_assoc()){
+              $docQueue = $row['docQueue'];
+
+              $docQueue = trim($docQueue + 1);
+
+              $changeDocQueue = "UPDATE doctor SET docQueue = '$docQueue' WHERE docFname = '$docName'";
+              setData($changeDocQueue);
+
+              //header("Location:dash2.php");
+
+              }
+    }
+    else{
+       
+
+        echo'<script>'.'alert("Impossible action. You have already a pending appointment"); window.location.replace("home.php");'.'</script>';
+
+    }
+
+}
+
+}
+
+?>
+
+
+
+
+
+
+
+
+
+
 
 		   <footer class="container-fluid text-center">
             <p>Footer Text</p>
         </footer>
+       
 </body>
 </html>
