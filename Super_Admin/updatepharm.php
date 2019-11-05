@@ -12,7 +12,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>Update Nurse</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
@@ -22,37 +22,33 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {
-        'packages':['geochart'],
-        // Note: you will need to get a mapsApiKey for your project.
-        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-      });
-      google.charts.setOnLoadCallback(drawRegionsMap);
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
-      function drawRegionsMap() {
+      function drawChart() {
+
         var data = google.visualization.arrayToDataTable([
-          ['Country', 'Patient Visits'],
-          ['Germany', 200],
-          ['United States', 300],
-          ['Brazil', 400],
-          ['Canada', 500],
-          ['France', 600],
-          ['RU', 700]
+          ['Task', 'Patient per Day'],
+          ['Medicine1',     11],
+          ['Medicine2',      2],
+          ['Medicine3',  2],
+          ['Medicine4', 2],
+          ['Medicine5',    7]
         ]);
 
-        var options = {};
+        var options = {
+          title: 'Medicine Quantities'
+        };
 
-        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
 
         chart.draw(data, options);
       }
     </script>
-</head>
 <style>
-
 <body class="w3-light-grey">
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         #constant{
@@ -68,6 +64,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
     }
 	</style>
+    </head>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
@@ -119,19 +116,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     </div>
   </div>
   <hr>
-  <div class="w3-container">
-    <h5>Dashboard</h5>
-  </div>
+ 
   <div class="w3-bar-block">
     <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
     <a href="dashboard.php" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
-    <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
-    <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
-    <a href="stats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Reports</a>
-    <a href="doc-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Doctor</a>
-    <a href="nurse-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Nurse</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
+    <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Manage Doctors</a>
+    <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Manage Nurses</a>
+    <a href="pats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i> Manage Patients</a>
+    <a href="ambs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i> Manage Ambulances</a>
+    <a href="pharms.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i> Manage Pharmacist</a>
+    <a href="hosps.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Manage Hospitals</a>
+    <a href="pat-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Create Patient</a>
+    <a href="hosp-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Create Hospital Admin</a>
+    <a href="amb-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Create Ambulance</a>
+    <a href="pharm-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Create Pharmacist</a><br><br>
   </div>
 </nav>
 
@@ -140,50 +138,146 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:300px;margin-top:10px;">
 
-<div class="w3-main" style="margin-left:300px;margin-top:43px;">
-<header class="w3-container" style="padding-top:22px">
-    <h4><b><i class="fa fa-dashboard"></i> My Dashboard</b></h4>
-    <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
-      <div class="w3-container w3-blue w3-padding-16">
-        <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>99</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Visits</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-teal w3-padding-16">
-        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>23</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Shares</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-orange w3-text-white w3-padding-16">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>50</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Users</h4>
-      </div>
-    </div>
-    </div>
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:15px">
+    <h5><b> Updating Pharmacy</b></h5>
   </header>
-
+    
   
-<div id="regions_div" style="width: 900px; height: 400px; border: 1px solid; margin-left:20px;"></div> 
+
+  <div class="w3-row-padding w3-margin-bottom">
+
 
 
  
-<footer class="w3-container w3-padding-16 w3-light-grey">
+  <div class="w3-panel">
+    <div class="w3-row-padding" style="margin:0 -16px">
+
+  <div class="w3-twothird">
+        <h4>Update Pharmacy</h4>
+        <table class="w3-table w3-striped w3-pale-blue">
+        <tr>
+
+
+      <th>Pharmacy Id</th>
+      <th>Pharmacy Name</th>
+      <th>Pharmacy Phone Number</th>
+      <th>Pharmacy Address</th>
+      <th>Pharmacy Email</th>
+        
+      
+
+        </tr>
+         
+<?php
+
+require_once "dbConnection.php";
+$link = connect();
+if(isset($_POST["pharmId"])){
+$pharmId = $_POST["pharmId"];
+$query = "SELECT pharmId, pharmName, pharmPhone, pharmEmail, pharmAddress FROM `pharmacy` WHERE pharmId = '$pharmId' ";
+$result = $link->query($query);
+
+while ($row = $result->fetch_assoc()){
+
+
+	
+	
+echo ("
+<tr class='w3-pale-blue'>
+
+
+<td>".$row['pharmId']."</td>
+<td>".$row['pharmName']."</td>
+<td>".$row['pharmPhone']."</td>
+<td>".$row['pharmAddress']."</td>
+<td>".$row['pharmEmail']."</td>
+
+
+</tr> 
+
+");
+
+
+
+
+
+echo("
+        </table>
+      </div>
+
+      </div>
+
+ 
+      <h3>Update Pharmacy Here</h3>
+        <table class='w3-table w3-striped w3-white'>
+        <tr>
+    
+      
+        <th>Pharmacy Name</th>
+        <th>Pharmacy Address</th>
+        <th>Pharmacy Phone Number</th>
+        <th>Pharmacy Email</th>
+    
+      
+    
+        <th>Action</th>
+        </tr>
+         
+");
+
+
+	
+echo ("
+ 
+<tr>
+<form action ='updatepharmPr.php' method='post' >
+
+<td>
+<input type = 'text' class='form-control'    name = 'pharmName' placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'pharmAddress'  placeholder='edit'/>
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'pharmPhone' placeholder='edit' />
+</td>
+
+<td>
+<input type = 'text' class='form-control'  name = 'pharmEmail' placeholder='edit' />
+</td>
+
+
+
+<td>
+
+<input type = 'submit' class='btn btn-primary'  name = 'save' value = 'Save'/>
+<input type = 'hidden' name = 'pharmId' value = '".$row['pharmId']."'/>
+</td>
+</form>	
+</tr>
+
+");
+
+
+}
+}
+?>
+        </table>
+
+
+
+
+  </div>
+
+
+
+
+  <br>
   <div class="w3-container w3-dark-grey w3-padding-32">
     <div class="w3-row">
       <div class="w3-container w3-third">
@@ -207,7 +301,6 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       </div>
     </div>
   </div>
-  </footer>
 
   <!-- Footer -->
 
