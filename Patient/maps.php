@@ -299,7 +299,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     <option value="30">30 min</option>
                     <option value="60">1 hour</option>
                     <option value="300">5 hours</option>
-                    <option value="60000">10 hours</option>
+                    <option value="60000">10 hours </option>
                 </select>
                  <select id="mode">
                     <option value="DRIVING">drive</option>
