@@ -27,6 +27,8 @@ $docId = $_SESSION["id"];
 $oldListStatus = "doctor session";
 $newListStatus = "awaiting medication";
 $status = "awaiting doctor";
+$oldMedRecStatus = "Seen Nurse";
+$newMedRecStatus = "awaiting medication";
 
 //Changing WaitlingList status of patient
 //Update MedRecords Relation
@@ -37,7 +39,7 @@ $status = "awaiting doctor";
 
 //WE NEED TO ADD STATUS ATTRIBUTE TO MEDICAL RECORDS RELAION SO AS TO KNOW WHAT RCORD TO UPDATE----THEREFORE ADD STATUS ATTRIBUTE CHECK TO CODE BELOW
 //Update MedRecords Relation
-$updatePatMedRecords = "UPDATE medicalrecords SET docId = '$docId', illness =  '$illness', docNote = '$docNote', medName = '$medName', intakeInstructions = '$intakeInstructions' WHERE patId = '$patId' AND waitinglist.listStatus = '$status' ";
+$updatePatMedRecords = "UPDATE medicalrecords SET docId = '$docId', illness =  '$illness', docNote = '$docNote', medName = '$medName', intakeInstructions = '$intakeInstructions' medRecStatus = '$newMedRecStatus' WHERE patId = '$patId' AND  medRecStatus = '$oldMedRecStatus'";
 setData($updatePatMedRecords);
 
 //Changing WaitlingList status of patient

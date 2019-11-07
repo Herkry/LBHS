@@ -23,11 +23,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     $bmi = $_POST['bmi'];
     $glcLvl = $_POST['glcLvl'];
     $symptoms = $_POST['symptoms'];
+    $medRecStatus = "Seen Nurse";
 
 
     // INSERT NEW PATIENT_RECORDS INTO DB
-    $insertPatientRecords = "INSERT INTO medicalrecords (temp, bloodP, bmi, glcLvl, symptoms, date_created, patId, nurseId)
-    VALUES ('$temp', '$bloodP', '$bmi', '$glcLvl', '$symptoms', now(), '$patId', '$nurseId')";
+    $insertPatientRecords = "INSERT INTO medicalrecords (temp, bloodP, bmi, glcLvl, symptoms, date_created, patId, nurseId, medRecStatus)
+    VALUES ('$temp', '$bloodP', '$bmi', '$glcLvl', '$symptoms', now(), '$patId', '$nurseId', '$medRecStatus')";
     setData($insertPatientRecords);
 
     // UPDATE PATIENT QUEUE STATUS

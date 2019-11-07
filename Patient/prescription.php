@@ -21,6 +21,18 @@ $rowMedAllocated = getData($selectMedAllocated);
 //print_r($rowMedAllocated);
 
 
+//If statement to redirect patient to home page if they have not been assigned medication by doctor yet
+if(count($rowMedAllocated) == 0){
+  //echo("Harry");
+  echo("<script>
+            window.alert('You have not seen the doctor yet so no medication is allocated to you currently');
+            location.replace('home.php');       
+        </script>"
+  );
+  //header("Location: home.php");
+}
+
+
 
 //Select from medicine DB details of the  medName allocated is as in $rowMedAllocated[0]['medname'], and medicine exists
 $rowMedAllocatedName = $rowMedAllocated[0]['medName'];
