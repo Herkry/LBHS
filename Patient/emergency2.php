@@ -133,11 +133,11 @@ require("sqlFunctions.php");
 	    height:40px;
     
 	    
-        padding-top:3px;
+      padding-top:3px;
 	    font-size:20px;
 	    font-family: "Angsana New", Angsana, serif;
 	    color: white;
-	    float:left;
+	    
 	
 	  
 	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
@@ -259,7 +259,7 @@ require("sqlFunctions.php");
 		   <div id="back">
 		   
 		           		   
-		      <div id="sublabel31">
+		      <div id="sublabel31" align = 'center'>
 			      Ambulance Information 
           </div>
           <div id="label3">

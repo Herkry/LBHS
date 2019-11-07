@@ -17,8 +17,8 @@ $ambId =  $_SESSION["id"];
 
 //Getting patName, etc from form
 $patId  = $_POST["patInSessionId"];
-echo($ambId);
-echo($patId);
+// echo($ambId);
+// echo($patId);
 // $illness = $_POST["illness"];
 // $docNote = $_POST["docNote"];
 // $medName = $_POST["medName"];
@@ -55,6 +55,6 @@ setData($updateAmbStatus);
 
 
 //Return doctor to dashboard.php
-//header("Location: dashboard.php");
+header("Location: dashboard.php");
 
 ?>

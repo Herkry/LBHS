@@ -20,6 +20,8 @@ require("sqlFunctions.php");
 $ambId =  $_SESSION["id"];
 $ambListStatus = "In session";
 
+//echo($ambId);
+
 //Running Query to select from waitingList 
 $selectPatAmbWaitListIds = "SELECT patId FROM ambwaitingList WHERE ambId = '$ambId' AND ambListStatus = '$ambListStatus'";
 $rowPatIds = getData($selectPatAmbWaitListIds);
@@ -28,7 +30,7 @@ $rowPatIds = getData($selectPatAmbWaitListIds);
 //TEST
 // echo($docId);
 // echo("<pre>");
-// print_r($rowPatIds);
+//print_r($rowPatIds);
 // echo("</pre>");
 
 //Declare array to store all the patDetails from the patIds selected in the above query
@@ -193,11 +195,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <tr>
 
         <tr>
-
+        <th></th> 
         <th>Patient Name</th>
         <th>Patient DOB</th>
         <th>Patient Phone</th>
         <th>Patient Email</th>
+        <th></th>
 
 </tr>
 

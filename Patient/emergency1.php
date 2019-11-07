@@ -7,14 +7,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-require("sqlFunctions.php");
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Emergency</title>
+  <title>Dashboard</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -89,6 +88,7 @@ require("sqlFunctions.php");
 	    padding:30px;
 	
 	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+		border-radius: 25px;
       }
    #sublabel32{
      width:600px;
@@ -103,54 +103,13 @@ require("sqlFunctions.php");
      padding:30px;
      color:white;
      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-   }
-  
-
-
-#label3{
-      height:200px;
-
-    
-	  margin-top:20px;
-  
-      }
-  
-   #sublabel31{
-	    width:600px;
-	    height:70px;
-    
-	    margin:auto;
-        padding-top:15px;
-	    font-size:30px;
-	    font-family: "Angsana New", Angsana, serif;
-	    color: white;
-	    text-align:center;
-	
-	    border-radius: 25px;
-	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-      }
-   #sublabel32{
-     width:600px;
-	   height:150px;
-       margin-top:20px;
-       margin-bottom:20px;
-     margin:auto;
-
-     font-family:"Angsana New", Angsana, serif;
-     font-size:22px;
-     text-align: left;
-    
-     padding:30px;
-     color:white;
-     background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-     border-radius: 25px;
+	 border-radius: 25px;
      }
 
 #sublabel33{
      width:250px;
      height:50px;
      
-     margin: 10px;
 
      padding-top:11px;
      text-align: center;
@@ -158,12 +117,12 @@ require("sqlFunctions.php");
      font-size:20px;
      border-radius: 25px;
      background-color: #CB4335;
+	 border-radius: 25px;
     
 }
 
 
 
-        
         #map{
             height:500px;
             width:100%;
@@ -180,7 +139,13 @@ require("sqlFunctions.php");
 		  
 		  
 		}
+		#specialist{
+			float: left;
+			margin-right:50px;
+			padding-top:10px;
+			width:200px;
 		
+		}
 
     .notification {
   background-color: #0B0B3B;
@@ -211,20 +176,30 @@ require("sqlFunctions.php");
 			float: left;
 			padding-top:10px;
 			width:200px;
+			margin-right:50px;
 
-		
-    }
-		
+		}
+		.buttons{
+			float:left;
+			padding-top:30px;
+			width:200px;
+		}
 
-		
-    footer {
+		footer {
 	  background-color: black;
       padding: 25px;
 	  height: 70px;
     }
 
 
-  
+   #top-cont{
+     border:1px solid;
+     height:75px;
+     margin:5px;
+     padding-left:10px;
+   }
+
+	
     </style>
 </head>
 <body>  			
@@ -233,7 +208,10 @@ require("sqlFunctions.php");
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
       <img src="logo.png" height="70" width="70"/>
 	  Geolocation Based Healthcare
-    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>	
+    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
+	
+
+	
   </div>
 
 </div>
@@ -248,12 +226,11 @@ require("sqlFunctions.php");
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-      <li  ><a href="home.php" style="color: white;">Home</a></li>
-        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge"><?php $linker = connect(); $patId = $_SESSION["id"]; $listStatus = "Being Assisted"; $checker = mysqli_query($linker, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' "); $checks = mysqli_num_rows($checker);  echo($checks)?></span></a></li>
+        <li class="active" ><a href="#" style="color: white;">Home</a></li>
+        <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge">1</span></a></li>
         <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
-        <li class="active"><a href="#"style="color: white;">Emergency</a></li>
-        
-        <li><a href="history.php"style="color: white;">Medical History</a></li>
+        <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
+	    	<li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		<li><a href="reset-password.php" style="color: white;">Reset Your Password</a></li>
@@ -263,10 +240,12 @@ require("sqlFunctions.php");
   </div>
 </nav>
    
+      <div id="top-cont">
+
 		   <div id="search">
 
 		   <div id="specialist" class="form-group">
-        <label>Search Specialist</label>
+        <label>Search Ambulance Type</label>
 		
 
           
@@ -307,12 +286,10 @@ require("sqlFunctions.php");
            <input id="zoom-to-area" class="btn btn-primary" type="button" value="Zoom">
           </div>
 
-            <div class="buttons">
-                <input id="zoom-to-area" class="btn btn-primary" type="button" style="background-color:#CB4335; border-color:#CB4335;" value="Automatic Scheduling">
-            </div><br>
+           
 
             
-            <div>
+            <div><br><br>
                 <span class="text"> Within </span>
                 <select id="max-duration">
                     <option value="10">10 min</option>
@@ -322,18 +299,18 @@ require("sqlFunctions.php");
                     <option value="300">5 hours</option>
                     <option value="60000">10 hours </option>
                 </select>
-                 <select id="mode">
+                 <select id="mode" >
                     <option value="DRIVING">drive</option>
                     <option value="WALKING">walk</option>
                     <option value ="BICYCLING">bike</option>
                     <option value ="TRANSIT">transit ride</option>
                 </select>
-                <span class="text">of</span>
-                <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY">
+                <!-- <span class="text">of</span>
+                <input id="search-within-time-text" type="text" placeholder="Ex: Google Office NYC or 75 9th Ave, New York, NY">-->
                 <input id="search-within-time" type="button" value="Go">
 
-                <span class="text"> Draw a shape to search within it for homes!</span>
-                <input id="toggle-drawing"  type="button" value="Drawing Tools">
+                <!--<span class="text"> Draw a shape to search within it for homes!</span>-->
+                 <input id="toggle-drawing"  type="button" value="Drawing Tools"> 
             </div>
 
 
@@ -346,6 +323,7 @@ require("sqlFunctions.php");
            
         
         <div id="map">
+          <script></script>
 
       
 		   <script>
@@ -380,6 +358,7 @@ require("sqlFunctions.php");
         
 
     function initMap() {
+     
 			map = new google.maps.Map(document.getElementById('map'), {
 			center: new google.maps.LatLng(-33.863276, 151.207977),
 			zoom: 12
