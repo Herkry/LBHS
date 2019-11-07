@@ -7,6 +7,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+
+require_once "dbConnection.php";
+$link = connect();
+$nurseId = $_SESSION["id"];
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +20,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="nurseStyle.css">
+<link rel="stylesheet" type='text/css' href="statStyle.php" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -114,23 +120,31 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </header>
 
   <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
-      <div class="w3-container w3-red w3-padding-16">
-        <div class="w3-left"><i class="fa fa-comment w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>52</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Messages</h4>
-      </div>
-    </div>
+
+
+  <?php
+          $query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
+          $res = $link->query($query);
+          while ($r = $res->fetch_assoc()){
+          
+          $hospId = $r['hospId'];
+
+         $checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId'");
+         $res0 = mysqli_num_rows($checker0);
+         //$status1 = "awaiting doctor";
+         $status1 = "Being Assisted";
+         $checker1 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId' AND `listStatus`= '$status1'");
+         $res1 = mysqli_num_rows($checker1);
+          
+     ?>
+
 
     <div class="w3-quarter">
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
         <div class="w3-right">
 
-          <h3>50</h3>
+          <h3><?php echo $res1; }?></h3>
         </div>
         <div class="w3-clear"></div>
         <h4>Queued Patients</h4>
@@ -140,20 +154,31 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   
     <hr>
   <div class="w3-container">
-    <h5>General Stats</h5>
-    <p>New Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-green" style="width:25%">+25%</div>
+  <p style="margin-left:20px;">Served Patients</p>
+    <div class="w3-grey" style="margin-left:20px;">
+    <?php
+       $query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
+       $res = $link->query($query);
+       while ($r = $res->fetch_assoc()){
+       
+         $hospId = $r['hospId'];
+       $status1 = "awaiting doctor";
+       $status0 = "Being Assisted";
+       $checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId' AND `listStatus`= '$status0'");
+       $checker1 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId' AND `listStatus`= '$status1'");
+       $res0 = mysqli_num_rows($checker0);
+       $res1 = mysqli_num_rows($checker1);
+       $tot = $res0 + $res1;
+       if($tot!=0){
+       $stat1 = ($res1*100)/$tot;
+       $stat0 = ($res0*100)/$tot;
+      echo("<div id ='stat1' class='w3-container w3-center w3-padding w3-green'>".$stat1."%"."</div>");
+       
+    ?>
     </div>
-
-    <p>Current Patients</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
-    </div>
-
-    <p>Bounce Rate</p>
-    <div class="w3-grey">
-      <div class="w3-container w3-center w3-padding w3-red" style="width:75%">75%</div>
+    <p style="margin-left:20px;">Remaining Patients</p>
+    <div class="w3-grey" style="margin-left:20px;">
+      <div   id ='stat0'     class="w3-container w3-center w3-padding w3-red"><?php echo($stat0); }}?>%</div>
     </div>
   </div>
   <hr>
@@ -177,9 +202,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
          
 <?php
 
-require_once "dbConnection.php";
-$link = connect();
-$nurseId = $_SESSION["id"];
+
 $listStatus = "Being Assisted";
 $query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
 $res = $link->query($query);

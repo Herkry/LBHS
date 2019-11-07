@@ -7,6 +7,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
+require_once "dbConnection.php";
+$link = connect();
+$nurseId = $_SESSION["id"];
 ?>
 
 <!DOCTYPE html>
@@ -115,14 +119,29 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
      
   <div class="w3-row-padding w3-margin-bottom">
+
+  <?php
+          $query = "SELECT hospId FROM `nurse` WHERE nurseId = '$nurseId' ";
+          $res = $link->query($query);
+          while ($r = $res->fetch_assoc()){
+          
+          $hospId = $r['hospId'];
+
+         $checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId'");
+         $res0 = mysqli_num_rows($checker0);
+         $status1 = "Being Assisted";
+         $checker1 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId' AND `listStatus`= '$status1'");
+         $res1 = mysqli_num_rows($checker1);
+          
+     ?>
     <div class="w3-quarter">
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
         <div class="w3-right">
-          <h3>50</h3>
+          <h3><?php echo $res1; }?></h3>
         </div>
         <div class="w3-clear"></div>
-        <h4>Patient Queue NO</h4>
+        <h4>Patient Queue</h4>
       </div>
     </div>
   </div>

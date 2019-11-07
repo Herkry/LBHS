@@ -7,6 +7,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -27,23 +28,51 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <!--the bar gragh start here-->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+
+<?php 
+
+require_once "dbConnection.php";
+$link = connect();
+
+$status1 = "awaiting doctor";
+$checker1 = mysqli_query($link,"SELECT patId FROM `patient`");
+$res1 = mysqli_num_rows($checker1);
+
+$query = "SELECT DISTINCT YEAR(appointment_date) FROM waitinglist";
+
+$result = $link->query($query);
+
+  echo("
+
+    <script type='text/javascript'>
       google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses', 'Profit'],
-          ['2014', 1000, 400, 200],
-          ['2015', 1170, 460, 250],
-          ['2016', 660, 1120, 300],
-          ['2017', 1030, 540, 350]
+          ['Year', 'Visits', 'Patients'],
+          
+            ");
+          
+                    while ($row = $result->fetch_assoc()){
+                      //echo("<script>alert('test')</script>");
+                     $year = $row['YEAR(appointment_date)'];
+                     $checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE YEAR(appointment_date) = '$year'");
+                     $res0 = mysqli_num_rows($checker0);
+            
+                      
+          echo("
+          ['$year', $res0, $res1],
+          ");
+        }
+          
+        echo("
         ]);
 
         var options = {
           chart: {
-            title: 'Company Performance',
-            subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+            title: 'System Patients Traffic',
+            subtitle: 'Patient Visits over Current Patients',
           }
         };
 
@@ -52,8 +81,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         chart.draw(data, google.charts.Bar.convertOptions(options));
       }
     </script>
+    ");
+    ?>
 <!--the bar gragh end here-->
-    <script type="text/javascript">
+   <?php
+   $query = "SELECT DISTINCT patAddress FROM `patient`";
+   $result = $link->query($query);
+   echo("
+    <script type='text/javascript'>
       google.charts.load('current', {
         'packages':['geochart'],
         // Note: you will need to get a mapsApiKey for your project.
@@ -64,13 +99,22 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
       function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable([
-          ['Country', 'Patient Visits'],
-          ['Germany', 200],
-          ['United States', 300],
-          ['Brazil', 400],
-          ['Canada', 500],
-          ['France', 600],
-          ['RU', 700]
+          ['Country', 'Total Patients'],
+
+          ");
+
+          while ($row = $result->fetch_assoc()){
+
+            $address = $row['patAddress'];
+            $addCheck = mysqli_query($link,"SELECT patId FROM `patient` WHERE  patAddress = '$address'");
+            $res = mysqli_num_rows($addCheck);
+            echo("
+          ['$address', $res],
+          ");
+          }
+        
+
+    echo("
         ]);
 
         var options = {};
@@ -80,6 +124,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         chart.draw(data, options);
       }
     </script>
+    ");
+    ?>
 </head>
 <style>
 
@@ -176,34 +222,33 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <header class="w3-container" style="padding-top:22px">
     <h4><b><i class="fa fa-dashboard"></i> My Dashboard</b></h4>
     <div class="w3-row-padding w3-margin-bottom">
+     <?php
+         //require_once "dbConnection.php";
+         //$link = connect();
+  
+
+
+        
+     ?>
     <div class="w3-quarter">
       <div class="w3-container w3-blue w3-padding-16">
         <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
         <div class="w3-right">
-          <h3>99</h3>
+          <h3><?php echo $res0; ?></h3>
         </div>
         <div class="w3-clear"></div>
         <h4>Visits</h4>
       </div>
     </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-teal w3-padding-16">
-        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>23</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Shares</h4>
-      </div>
-    </div>
+
     <div class="w3-quarter">
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
         <div class="w3-right">
-          <h3>50</h3>
+          <h3><?php echo $res1; ?></h3>
         </div>
         <div class="w3-clear"></div>
-        <h4>Users</h4>
+        <h4>Current Patients</h4>
       </div>
     </div>
     </div>

@@ -7,6 +7,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+require_once "dbConnection.php";
+$link = connect();
+$hospId = $_SESSION["id"];
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +26,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+<?php
+
+   echo("
+    <script type='text/javascript'>
       google.charts.load('current', {
         'packages':['geochart'],
         // Note: you will need to get a mapsApiKey for your project.
@@ -34,13 +40,32 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
       function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable([
-          ['Country', 'Patient Visits'],
-          ['Germany', 200],
-          ['United States', 300],
-          ['Brazil', 400],
-          ['Canada', 500],
-          ['France', 600],
-          ['RU', 700]
+          ['Country', 'Total Patients'],
+
+          ");
+
+    
+
+            $query = "SELECT patId FROM `waitinglist` WHERE hospId = '$hospId'";
+            $result = $link->query($query);
+            while ($row = $result->fetch_assoc()){
+            
+            $allPats = $row['patId'];
+            $query1 = "SELECT patId, patAddress FROM `patient` WHERE patId = '$allPats'";
+            $result1 = $link->query($query1);
+            while ($row1 = $result1->fetch_assoc()){
+              $address = $row1['patAddress'];
+              $patId = $row1['patId'];
+              $addCheck = mysqli_query($link,"SELECT patId FROM `waitinglist` WHERE  patId = '$patId'");
+              $res = mysqli_num_rows($addCheck);
+            echo("
+          ['$address', $res],
+          ");
+            }
+          }
+        
+
+    echo("
         ]);
 
         var options = {};
@@ -50,6 +75,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         chart.draw(data, options);
       }
     </script>
+    ");
+    ?>
 </head>
 <style>
 
@@ -145,34 +172,37 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <header class="w3-container" style="padding-top:22px">
     <h4><b><i class="fa fa-dashboard"></i> My Dashboard</b></h4>
     <div class="w3-row-padding w3-margin-bottom">
+     <?php
+         require_once "dbConnection.php";
+         $link = connect();
+         $hospId = $_SESSION["id"];
+
+         $checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId'");
+         $res0 = mysqli_num_rows($checker0);
+         $status1 = "awaiting doctor";
+         $checker1 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE hospId = '$hospId' AND `listStatus`= '$status1'");
+         $res1 = mysqli_num_rows($checker1);
+        
+     ?>
     <div class="w3-quarter">
       <div class="w3-container w3-blue w3-padding-16">
         <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
         <div class="w3-right">
-          <h3>99</h3>
+          <h3><?php echo $res0; ?></h3>
         </div>
         <div class="w3-clear"></div>
         <h4>Visits</h4>
       </div>
     </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-teal w3-padding-16">
-        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>23</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Shares</h4>
-      </div>
-    </div>
+
     <div class="w3-quarter">
       <div class="w3-container w3-orange w3-text-white w3-padding-16">
         <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
         <div class="w3-right">
-          <h3>50</h3>
+          <h3><?php echo $res1; ?></h3>
         </div>
         <div class="w3-clear"></div>
-        <h4>Users</h4>
+        <h4>Current Patients</h4>
       </div>
     </div>
     </div>
