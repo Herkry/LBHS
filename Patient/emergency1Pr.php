@@ -18,7 +18,7 @@ $link = connect();
 // get the docName parameter from Map and patientId from  SESSION VARIABLE, and other DB parameters
 if (isset($_POST['submit'])) {
   
-$ambNoPlate= $_POST['submit'];
+$ambNoPlate= $_POST['ambNoPlate'];
 
 
 //echo($ambNoPlate);

@@ -138,9 +138,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li ><a href="test.html#myCarousel" style="color: white;">Home</a></li>
-        <li><a href="#" style="color: white;">About Us</a></li>
-        <li><a href="#"style="color: white;">Services</a></li>
-        <li><a href="#"style="color: white;">Contacts</a></li>
+  
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="active"><a href="login.php" style="color: white;"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>

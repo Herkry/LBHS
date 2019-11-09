@@ -59,6 +59,7 @@ require('dbConnection.php');
       background-image:linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(myArt.jpg);
       font-family: "Angsana New", Angsana, serif;
       font-size:20px;
+      margin-bottom:8px;
 
     }
 
@@ -150,12 +151,10 @@ require('dbConnection.php');
 		}
 
     .notification {
-  background-color: #0B0B3B;
-  color: white;
-  text-decoration: none;
-  margin-left: 15px;
+
+
   position: relative;
-  display: inline-block;
+
 
 }
 
@@ -166,7 +165,7 @@ require('dbConnection.php');
 .notification .badge {
   position: absolute;
   top: -10px;
-  right: -10px;
+
   padding: 5px 10px;
   border-radius: 50%;
   background-color: red;
@@ -188,9 +187,9 @@ require('dbConnection.php');
 		}
 
 		footer {
-	  background-color: black;
+	  background-color: #0A0A2A;
       padding: 25px;
-	  height: 70px;
+	  height: 2px;
     }
 
 
@@ -201,19 +200,91 @@ require('dbConnection.php');
      padding-left:10px;
    }
 
+
+
+
+   #label1{
+      color: #CB4335; 
+      font-family: Angsana New, Angsana, 
+      serif; font-size:25px;
+    }
+  
+    #session{
+      margin: 10px; 
+      float: right; 
+      margin-left: 100px; 
+      padding-top:1px;
+      text-align: center; 
+      color: #626567; 
+      font-family: 'Angsana New', Angsana, serif; 
+      font-size:20px;
+    }
+    #profile-pic{
+      margin-right:10px;
+
+    }
+
+    @media screen and (max-width: 800px) {
+
+      #search{
+          width:200px;
+          display:inline;
+          padding-left:0px;
+          }
+      #top-cont{
+          border:1px solid;
+          height:250px;
+          margin:5px;
+          padding:5px;
+          width:80%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+        
+
+          }
+      .buttons{
+          float:left;
+          padding-top:10px;
+      
+          }
+      #specialist{
+          float: left;
+          margin-right:5px;
+          padding-top:5px;
+          width:100px;
+          }
+      .navbar {
+        
+          font-family: "Angsana New", Angsana, serif;
+          font-size:20px;
+          margin-bottom:8px;
+          background: rgba(0,0,0,0.8);
+    
+          }
+      #label1{
+        font-size:0px;
+      }
+      #session{
+        font-size:0px;
+      }
+
+    }
+
+
+
 	
     </style>
 </head>
 <body>  			
 			
 <div id="constant">
-  <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
-      <img src="logo.png" height="70" width="70"/>
+  <div id="label1">
+      <img id="logo" height="70" width="70"   src="logo.png" />
 	  Geolocation Based Healthcare
-    <div style="margin: 10px; float: right; margin-left: 100px; padding-top:1px; text-align: center; color: #626567; font-family: 'Angsana New', Angsana, serif; font-size:20px;"><img src= "profile.png" style="margin-right:10px;" height="50" width="50" /><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
-	
-
-	
+    <div id="session"><img src= "profile.png" id="profile-pic"  height="50" width="50"/><?php echo htmlspecialchars($_SESSION["username"]); ?></div>
   </div>
 
 </div>
@@ -230,7 +301,8 @@ require('dbConnection.php');
       <ul class="nav navbar-nav">
         <li class="active" ><a href="#" style="color: white;">Home</a></li>
         <li><a href="dash2.php" class="notification"  style="color: white;"><span>Appointments</span><span class="badge"><?php $linker = connect(); $patId = $_SESSION["id"]; $listStatus = "Being Assisted"; $checker = mysqli_query($linker, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus' "); $checks = mysqli_num_rows($checker);  echo($checks)?></span></a></li>
-        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge">1</span></a></li>
+        
+        <li><a href="prescription.php" class="notification"  style="color: white;"><span>Prescription</span><span class="badge"><?php $linker = connect(); $patId = $_SESSION["id"]; $listStatus1 = "awaiting medication"; $checker = mysqli_query($linker, "SELECT waitListId FROM waitinglist WHERE patId = '$patId' AND listStatus = '$listStatus1' "); $checks = mysqli_num_rows($checker);  echo($checks)?></span></a></li>
         <li><a href="emergency1.php"style="color: white;">Emergency</a></li>
 	    	<li><a href="history.php"style="color: white;">Medical History</a></li>
       </ul>
@@ -1135,7 +1207,7 @@ while ($row = $result1->fetch_assoc()){
 
 
 		   <footer class="container-fluid text-center">
-            <p>Footer Text</p>
+       <p style="color:white;">Copyright © 2019 - Geolocation Based Healthcare Services(GBHS). All Rights Reserved.</p>
         </footer>
        
 </body>

@@ -26,9 +26,9 @@
     
     /* Add a gray background color and some padding to the footer */
     footer {
-      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+      background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
       padding: 25px;
-      height: 100px;
+      height: 100%;
     }
     #label3{
       height:550px;
@@ -79,6 +79,65 @@
      background-color: #CB4335;
     
 }
+
+@media screen and (max-width: 800px) {
+
+
+  #label3{
+      height:400px;
+      padding-top: 20px;
+      background-image: url(csback.jpg);
+  
+      }
+  
+   #sublabel31{
+	    width:350px;
+	    height:180px;
+      float: bottom;
+	    margin:auto;
+      padding-top: 15px;
+	    font-size:30px;
+	    font-family: "Angsana New", Angsana, serif;
+	    color: white;
+	    text-align: center;
+	    padding:20px;
+	    border: 1px solid;
+	    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+      }
+   #sublabel32{
+     width:250px;
+     height:140px;
+     
+  
+	   margin:auto;
+	   margin-top: 15px;
+     font-family:"Angsana New", Angsana, serif;
+     font-size:20px;
+     text-align: center;
+     border: 1px solid;
+     padding:20px;
+     color:white;
+     background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+     }
+    #sublabel33{
+     width:100px;
+     height:40px;
+     margin: auto;
+     margin-top: 10px;
+     padding-top:6px;
+     text-align: center;
+     font-family: "Angsana New", Angsana, serif;
+     font-size:12px;
+     border-radius: 13px;
+     background-color: #CB4335;
+    
+}
+#label1{
+  font-size: opx;
+}
+
+}
+
   </style>
 </head>
 <body>
@@ -101,12 +160,15 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
-        <li><a href="#" style="color: white;">About Us</a></li>
-        <li><a href="#"style="color: white;">Services</a></li>
-        <li><a href="#"style="color: white;">Contacts</a></li>
+        <li ><a href="/LBHS/Doctor/login.php" style="color: white;">Doctor Login</a></li>
+        <li ><a href="/LBHS/Nurse/login.php" style="color: white;">Nurse Login</a></li>
+        <li ><a href="/LBHS/Hospital_Admin/login.php" style="color: white;">Admin Login</a></li>
+        <li ><a href="/LBHS/Ambulance/login.php" style="color: white;">Ambulance</a></li>
+        <li ><a href="/LBHS/Pharmacy/login.php" style="color: white;">Pharmacist Login</a></li>
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="login.php" style="color: white;"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        <li><a href="login.php" style="color: white;"><span class="glyphicon glyphicon-log-in"></span> Patient Login</a></li>
       </ul>
     </div>
   </div>
@@ -124,29 +186,31 @@
 </div>
  
 <div class="container text-center">    
-  <h3>What We Do</h3><br>
+  <h3 style="font-family: 'Angsana New', Angsana, serif;">What We Do</h3><br>
   <div class="row">
     <div class="col-sm-4">
-      <img src="im1.webp" class="img-responsive" style="width:100%" alt="Image">
-      <p>Current Project</p>
+      <img src="im1.webp" class="img-responsive" style="width:100%; border:1px solid;" alt="Image">
+      <a href="/LBHS/Pharmacy/login.php" style="color: rgb(119, 7, 12);"><span class="glyphicon glyphicon-log-in"></span><p>Join as a pharmacy</p></a>
+    
     </div>
     <div class="col-sm-4"> 
-      <img src="im2.jpg" class="img-responsive" style="width:100%" alt="Image">
-      <p>Project 2</p>    
+      <img src="im2.jpg" class="img-responsive" style="width:100%; border:1px solid;" alt="Image">
+      <a href="/LBHS/Hospital_Admin/login.php" style="color: rgb(119, 7, 12);"><span class="glyphicon glyphicon-log-in"></span><p>Join your Hospital Here</p></a>
+        
     </div>
     <div class="col-sm-4">
-      <div class="well">
-       <p>Some text..</p>
+      <div class="well" style="background: rgba(0,0,0,0.6); border-radius:0px; color: white;">
+        <a href="/LBHS/Ambulance/login.php" style="color: white;"><span class="glyphicon glyphicon-log-in"></span><p>Join as a New Ambulance</p></a>
       </div>
-      <div class="well">
-       <p>Some text..</p>
+      <div class="well" style="background: rgba(0,0,0,0.6);border-radius:0px; color: white;">
+        <a href="login.php" style="color: white;"><span class="glyphicon glyphicon-log-in"></span><p>Join as a New Patient</p></a>
       </div>
     </div>
   </div>
 </div><br>
 
 <footer class="container-fluid text-center">
-  <p>Footer Text</p>
+  <p style="color:white;">Copyright © 2019 - Geolocation Based Healthcare Services(GBHS). All Rights Reserved.</p>
 </footer>
 
 </body>
