@@ -45,21 +45,21 @@ $newMedRecStatus = "awaiting medication";
 $updatePatMedRecords = "UPDATE medicalrecords SET docId = '$docId', illness =  '$illness', docNote = '$docNote', medName = '$medName', intakeInstructions = '$intakeInstructions', medRecStatus = '$newMedRecStatus', medDosageAmt = '$dosageAmt' WHERE patId = '$patId' AND medRecStatus = '$oldMedRecStatus'";
 setData($updatePatMedRecords);
 
-echo($docId." ");
-echo($illness." ");
-echo($docNote." ");
-echo($medName." ");
-echo($intakeInstructions." ");
-echo($newMedRecStatus." ");
-echo($patId." ");
-echo($dosageAmt." ");
+// echo($docId." ");
+// echo($illness." ");
+// echo($docNote." ");
+// echo($medName." ");
+// echo($intakeInstructions." ");
+// echo($newMedRecStatus." ");
+// echo($patId." ");
+// echo($dosageAmt." ");
 
 //Changing WaitlingList status of patient
-//$updatePatWaitingList = "UPDATE waitingList SET listStatus =  '$newListStatus' WHERE patId = '$patId' AND listStatus = 'doctor session'";
-//setData($updatePatWaitingList);
+$updatePatWaitingList = "UPDATE waitingList SET listStatus =  '$newListStatus' WHERE patId = '$patId' AND listStatus = 'doctor session'";
+setData($updatePatWaitingList);
 
 
 //Return doctor to dashboard.php
-//header("Location: dashboard.php");
+header("Location: dashboard.php");
 
 ?>
