@@ -286,6 +286,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <th>Doctor's Note</th>
         <th>Medicine Name</th>
         <th>Intake Instructions</th>
+        <th>Dosage Amount</th>
         <th></th>
 
         </tr>
@@ -319,6 +320,10 @@ for($i = 0; $i < count($rowPatDetails); $i++ ){
 
   <td>
     <input type = 'text' class='form-control'  name = 'intakeInstructions' placeholder='Intake Instructions' />
+  </td>
+
+  <td>
+    <input type = 'text' class='form-control'  name = 'dosageAmt' placeholder='Intake Instructions' />
   </td>
 
   <td>

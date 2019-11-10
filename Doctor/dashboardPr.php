@@ -20,8 +20,8 @@ $listStatus = "doctor session";
 //TEST
 //echo($patInSessionId);
 
-//Change patient listStatus to "doctor session"
-$updatePatStatus = "UPDATE waitingList SET listStatus = '$listStatus' WHERE patId = '$patInSessionId' ";
+//Change patient listStatus to "doctor session" --WHERE listStatus = "awaiting doctor"
+$updatePatStatus = "UPDATE waitingList SET listStatus = '$listStatus' WHERE patId = '$patInSessionId' AND listStatus = 'awaiting doctor'";
 setData($updatePatStatus);
 
 //Reduce docQueue by 1

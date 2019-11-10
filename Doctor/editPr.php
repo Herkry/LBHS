@@ -21,6 +21,7 @@ $illness = $_POST["illness"];
 $docNote = $_POST["docNote"];
 $medName = $_POST["medName"];
 $intakeInstructions = $_POST["intakeInstructions"];
+$dosageAmt = $_POST["dosageAmt"];
 
 //Getting DB parameters
 $docId = $_SESSION["id"];
@@ -29,6 +30,8 @@ $newListStatus = "awaiting medication";
 $status = "awaiting doctor";
 $oldMedRecStatus = "Seen Nurse";
 $newMedRecStatus = "awaiting medication";
+
+
 
 //Changing WaitlingList status of patient
 //Update MedRecords Relation
@@ -39,15 +42,24 @@ $newMedRecStatus = "awaiting medication";
 
 //WE NEED TO ADD STATUS ATTRIBUTE TO MEDICAL RECORDS RELAION SO AS TO KNOW WHAT RCORD TO UPDATE----THEREFORE ADD STATUS ATTRIBUTE CHECK TO CODE BELOW
 //Update MedRecords Relation
-$updatePatMedRecords = "UPDATE medicalrecords SET docId = '$docId', illness =  '$illness', docNote = '$docNote', medName = '$medName', intakeInstructions = '$intakeInstructions' medRecStatus = '$newMedRecStatus' WHERE patId = '$patId' AND  medRecStatus = '$oldMedRecStatus'";
+$updatePatMedRecords = "UPDATE medicalrecords SET docId = '$docId', illness =  '$illness', docNote = '$docNote', medName = '$medName', intakeInstructions = '$intakeInstructions', medRecStatus = '$newMedRecStatus', medDosageAmt = '$dosageAmt' WHERE patId = '$patId' AND medRecStatus = '$oldMedRecStatus'";
 setData($updatePatMedRecords);
 
+echo($docId." ");
+echo($illness." ");
+echo($docNote." ");
+echo($medName." ");
+echo($intakeInstructions." ");
+echo($newMedRecStatus." ");
+echo($patId." ");
+echo($dosageAmt." ");
+
 //Changing WaitlingList status of patient
-$updatePatWaitingList = "UPDATE waitingList SET listStatus =  '$newListStatus' WHERE patId = '$patId' AND listStatus = 'doctor session'";
-setData($updatePatWaitingList);
+//$updatePatWaitingList = "UPDATE waitingList SET listStatus =  '$newListStatus' WHERE patId = '$patId' AND listStatus = 'doctor session'";
+//setData($updatePatWaitingList);
 
 
 //Return doctor to dashboard.php
-header("Location: dashboard.php");
+//header("Location: dashboard.php");
 
 ?>
