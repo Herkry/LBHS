@@ -98,7 +98,7 @@ if(empty($rowMedAllocatedDetails)){
     echo("
           <script>
               window.alert('No pharmacy found with the requested medication dosage');
-              window.location.replace('prescription.php');
+              location.replace('prescription.php');
           </script>
     ");
 

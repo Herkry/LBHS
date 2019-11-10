@@ -35,7 +35,7 @@ if(empty($rowMedAllocatedDetails)){
 
           <script>
               window.alert('No pharmacy found with the requested medication dosage');
-              window.location.replace('prescription.php');
+              location.replace('prescription.php');
           </script>
           
 
@@ -112,6 +112,21 @@ $requestStatus = "awaiting pharmacist";
 $insertPharmRequest = "INSERT INTO pharmacyrequests(medId, patId, pharmId, timeOfRequest, requestStatus) VALUES('$rowMedIdOne', '$patId', '$rowChosenPharmDetailsPharmId', NOW(), '$requestStatus') ";
 setData($insertPharmRequest);
 
+//Change listStatus and medRecStatus to Visit Completed
+$oldListStatus = "awaiting medication";
+$newListStatus = "Done";
+
+$oldMedRecStatus = "awaiting medication";
+$newMedRecStatus = "Done";
+
+
+//Update MedRecords Relation
+$updatePatMedRecords = "UPDATE medicalrecords SET medRecStatus = '$newMedRecStatus' WHERE patId = '$patId' AND  medRecStatus = '$oldMedRecStatus'";
+setData($updatePatMedRecords);
+
+//Changing WaitlingList status of patient
+$updatePatWaitingList = "UPDATE waitingList SET listStatus =  '$newListStatus' WHERE patId = '$patId' AND listStatus = '$newListStatus'";
+setData($updatePatWaitingList);
 
 
 }
