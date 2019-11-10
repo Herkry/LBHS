@@ -14,13 +14,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 require_once "dbConnection.php";
 $link = connect();
-$docId = $_SESSION["id"];
+$pharmId = $_SESSION["id"];
 
 
-$status1 = "awaiting medication";
-$status0 = "awaiting doctor";
-$checker0 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE docId = '$docId' AND `listStatus`= '$status0'");
-$checker1 = mysqli_query($link,"SELECT waitListId FROM `waitinglist` WHERE docId = '$docId' AND `listStatus`= '$status1'");
+$status1 = "Done";
+$status0 = "awaiting pharmacist";
+$checker0 = mysqli_query($link,"SELECT pharmacyRequestId FROM `pharmacyrequests` WHERE pharmId = '$pharmId' AND `requestStatus`= '$status0'");
+$checker1 = mysqli_query($link,"SELECT pharmacyRequestId FROM `pharmacyrequests` WHERE pharmId = '$pharmId' AND `requestStatus`= '$status1'");
 $res0 = mysqli_num_rows($checker0);
 $res1 = mysqli_num_rows($checker1);
 $tot = $res0 + $res1;

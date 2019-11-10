@@ -35,8 +35,8 @@ $width0 = $stat0;
 ?>
 
 #stat0{
-  width:  <?php echo $width0; ?>;
+  width:  <?php echo $width0; ?>%;
 }
 #stat1{
-  width:  <?php echo $width1; }?>;
+  width:  <?php echo $width1; }?>%;
 }

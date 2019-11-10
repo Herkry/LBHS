@@ -103,7 +103,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Login</title>
+  <title>Pharmacist Login</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -167,7 +167,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li ><a href="test.html#myCarousel" style="color: white;">Home</a></li>
+        <li ><a href="/LBHS/index.html" style="color: white;">Home</a></li>
   
       </ul>
       <ul class="nav navbar-nav navbar-right">

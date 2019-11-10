@@ -94,6 +94,11 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       font-size:20px;
 
     }
+    footer {
+	  background-color: #0A0A2A;
+      padding: 25px;
+	  height: 2px;
+    }
 	</style>
 	<div id="constant">
   <div id="label1" style="color: #CB4335; font-family: Angsana New, Angsana, serif; font-size:25px;">
@@ -155,10 +160,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <a href="docs.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Doctors</a>
     <a href="nurses.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-bullseye fa-fw"></i>  Nurses</a>
     <a href="stats.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Statistics</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Reports</a>
+
     <a href="doc-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Doctor</a>
     <a href="nurse-reg.php" class="w3-bar-item w3-button w3-padding"><i class="fa fa-history fa-fw"></i>  Register Nurse</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-cog fa-fw"></i>  Settings</a><br><br>
+
   </div>
 </nav>
 
@@ -209,35 +214,18 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </header>
 
   
-<div id="regions_div" style="width: 900px; height: 400px; border: 1px solid; margin-left:20px;"></div> 
+<div id="regions_div" style="width: 900px; height: 400px; border: 1px solid; margin-left:20px; margin-bottom:10px;"></div> 
 
 
  
-<footer class="w3-container w3-padding-16 w3-light-grey">
-  <div class="w3-container w3-dark-grey w3-padding-32">
+<div class="w3-container">
     <div class="w3-row">
-      <div class="w3-container w3-third">
-        <h5 class="w3-bottombar w3-border-green">Demographic</h5>
-        <p>Language</p>
-        <p>Country</p>
-        <p>City</p>
-      </div>
-      <div class="w3-container w3-third">
-        <h5 class="w3-bottombar w3-border-red">System</h5>
-        <p>Browser</p>
-        <p>OS</p>
-        <p>More</p>
-      </div>
-      <div class="w3-container w3-third">
-        <h5 class="w3-bottombar w3-border-orange">Target</h5>
-        <p>Users</p>
-        <p>Active</p>
-        <p>Geo</p>
-        <p>Interests</p>
-      </div>
+    <footer class="container-fluid text-center">
+       <p style="color:white;">Copyright © 2019 - Geolocation Based Healthcare Services(GBHS). All Rights Reserved.</p>
+        </footer>
+
     </div>
   </div>
-  </footer>
 
   <!-- Footer -->
 
